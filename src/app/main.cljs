@@ -12,11 +12,11 @@
   (.on @main-window "close" 
     (fn [] (reset! main-window nil))))
 
-(defn -main [& args]
+(defn init []
   (println electron app BrowserWindow)
   (.on app "ready" create-window)  
   (.on app "window-all-closed" 
     (when (not= (.platform js/process) "darwin")
       (.quit app))))
 
-(set! *main-cli-fn* -main)
+(set! *main-cli-fn* init)
