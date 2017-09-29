@@ -1,5 +1,5 @@
-/dev
-/prod
+/resource/jsdev
+/resource/js
 /node_modules
 pom.xml
 pom.xml.asc

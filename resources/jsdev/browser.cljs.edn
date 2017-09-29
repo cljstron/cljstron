@@ -1,0 +1,2 @@
+{:require  [app.browser]
+ :init-fns [app.browser/init]}
