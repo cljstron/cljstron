@@ -1,5 +1,5 @@
-/resource/jsdev
-/resource/js
+/resources/jsdev
+/resources/js
 /node_modules
 pom.xml
 pom.xml.asc
