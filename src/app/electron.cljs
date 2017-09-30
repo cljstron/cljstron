@@ -6,44 +6,52 @@
 (enable-console-print!)
 
 ; Main electron access
-(def electron (js/require "electron"))
+(def ^:export electron (js/require "electron"))
 
 ; for both processes
-(def clipboard (.-clipboard electron))
-(def crashReporter (.-crashReporter electron))
-(def deprecations (.-deprecations electron))
-(def nativeImage (.-nativeImage electron))
-(def shell (.-shell electron))
+(def ^:export clipboard (.-clipboard electron))
+(def ^:export crashReporter (.-crashReporter electron))
+(def ^:export deprecations (.-deprecations electron))
+(def ^:export nativeImage (.-nativeImage electron))
+(def ^:export shell (.-shell electron))
 
 ; for main process
-(def app (.-app electron))
-(def autoUpdater (.-autoUpdater electron))
-(def BrowserWindow (.-BrowserWindow electron))
-(def contentTracing (.-contentTracing electron))
-(def dialog (.-dialog electron))
-(def ipcMain (.-ipcMain electron))
-(def globalShortcut (.-globalShortcut electron))
-(def Menu (.-Menu electron))
-(def MenuItem (.-MenuItem electron))
-(def powerSaveBlocker (.-powerSaveBlocker electron))
-(def session (.-session electron))
-(def Tray (.-Tray electron))
+(def ^:export app (.-app electron))
+(def ^:export autoUpdater (.-autoUpdater electron))
+(def ^:export BrowserWindow (.-BrowserWindow electron))
+(def ^:export contentTracing (.-contentTracing electron))
+(def ^:export dialog (.-dialog electron))
+(def ^:export ipcMain (.-ipcMain electron))
+(def ^:export globalShortcut (.-globalShortcut electron))
+(def ^:export Menu (.-Menu electron))
+(def ^:export MenuItem (.-MenuItem electron))
+(def ^:export powerSaveBlocker (.-powerSaveBlocker electron))
+(def ^:export session (.-session electron))
+(def ^:export Tray (.-Tray electron))
 
 ; needs app to be ready
-(def powerMonitor)
-(def protocol)
-(def screen)
+(def ^:export powerMonitor)
+(def ^:export protocol)
+(def ^:export screen)
 
 ; Hidden internal modules
-(def NavigationController (.-NavigationController electron))
-(def webContents (.-webContents electron))
+(def ^:export NavigationController (.-NavigationController electron))
+(def ^:export webContents (.-webContents electron))
 
 ; Complementary modules
-(def os (js/require "os"))
-(def fs (js/require "fs-extra"))
-(def path (js/require "path"))
+(def ^:export os (js/require "os"))
+(def ^:export fs (js/require "fs-extra"))
+(def ^:export path (js/require "path"))
 
-(defn file-url [filename]
+(defn ^:export file-url [filename]
   "return normalized url from `filename`"
-  (str "file://" (join "/" [(js* "__dirname") filename])))
+  (str "file://" (join "/" [(js* "__dirname") ".." filename])))
+
+(def main-window (atom nil)) 
+
+(defn create-window []  
+  (reset! main-window (.BrowserWindow {:witdh 800 :height 600}))
+  (.loadURL @main-window (file-url "index.html"))
+  (.on @main-window "close" 
+    (fn [] (reset! main-window nil))))
 

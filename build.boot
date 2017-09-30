@@ -27,7 +27,7 @@
                 :optimizations      :none)
 
     (cljs       :ids                #{"main"}
-                :compiler-options    {:closure-defines {'app.main/dev? true}}
+                :compiler-options    {:closure-defines {'app.electron/dev? true}}
                 :optimizations      :none)
 
     (target :dir #{"resources/jsdev"})))

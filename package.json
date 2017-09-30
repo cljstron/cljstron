@@ -2,7 +2,7 @@
     "name": "@ivanpierre/app",
     "version": "1.0.11",
     "description": "ClojureScript skeleton in node.js with electron",
-    "main": "main.js",
+    "main": "resources/jsdev/main.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0",
         "start": "electron resources/"

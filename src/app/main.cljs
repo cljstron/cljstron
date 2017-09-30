@@ -1,18 +1,10 @@
 (ns app.main
   (:require [cljs.nodejs :refer [process enable-util-print!]]
-            [app.electron :refer [electron app BrowserWindow file-url]]))
+            [app.electron :refer [electron app BrowserWindow create-window]]))
 
 (enable-util-print!)
 
-(def main-window (atom nil)) 
-
-(defn create-window []  
-  (reset! main-window (.BrowserWindow {:witdh 800 :height 600}))
-  (.loadURL @main-window (file-url "index.html"))
-  (.on @main-window "close" 
-    (fn [] (reset! main-window nil))))
-
-(defn init []
+(defn ^:export init []
   (println electron app BrowserWindow)
   (.on app "ready" create-window)  
   (.on app "window-all-closed" 

@@ -1,6 +1,8 @@
 /resources/jsdev
-/resources/js
+/resources/public
+/ressource/*,js
 /node_modules
+/target
 pom.xml
 pom.xml.asc
 .lein-*
