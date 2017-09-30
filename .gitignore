@@ -1,7 +1,7 @@
 /resources/jsdev
 /resources/public
-/resources/*.js
-/resources/js
+#/resources/*.js
+#/resources/js
 /node_modules
 /target
 pom.xml
