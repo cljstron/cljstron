@@ -1,0 +1,13 @@
+[{"name":"renderer",
+  "js-name":"renderer.js",
+  "entries":["app.renderer"],
+  "depends-on":[],
+  "default":true,
+  "sources":
+  ["goog/debug/error.js", "goog/dom/nodetype.js",
+   "goog/string/string.js", "goog/asserts/asserts.js",
+   "goog/reflect/reflect.js", "goog/math/long.js",
+   "goog/math/integer.js", "goog/object/object.js",
+   "goog/array/array.js", "goog/string/stringbuffer.js",
+   "cljs/core.cljs", "app/renderer.cljs"],
+  "js-modules":[]}]
