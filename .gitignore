@@ -1,6 +1,7 @@
 /resources/jsdev
 /resources/public
-/ressource/*,js
+/resources/*.js
+/resources/js
 /node_modules
 /target
 pom.xml
@@ -9,3 +10,4 @@ pom.xml.asc
 .nrepl-*
 package-lock.json
 .vscode
+build.1.boot
