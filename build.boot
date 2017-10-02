@@ -1,6 +1,5 @@
 (set-env!
   :source-paths    #{"src"}
-  :resource-paths  #{"resources"}
   :dependencies '[[org.clojure/clojurescript  "1.9.229"]
                   [adzerk/boot-cljs           "1.7.228-2"]
                   [adzerk/boot-cljs-repl      "0.3.3"]
@@ -16,21 +15,21 @@
   (comp
     (speak)
 
-;    (cljs-repl  :ids                #{"browser"}) 
+;    (cljs-repl  :ids                #{"renderer"}) 
     
-;    (reload     :ids                #{"browser"}
+;    (reload     :ids                #{"renderer"}
 ;                :ws-host            "localhost"
 ;                :target-path        "target"
-;                :on-jsload          'app.browser/init)    
+;                :on-jsload          'app.renderer/init)    
     
-    (cljs       :ids                #{"browser"}
+    (cljs       :ids                #{"renderer"}
                 :optimizations      :none)
 
     (cljs       :ids                #{"main"}
                 :compiler-options    {:closure-defines {'app.electron/dev? true}}
                 :optimizations      :none)
 
-    (target :dir #{"resources/jsdev"})))
+    (target)))
   
   
 (deftask prod
@@ -41,9 +40,9 @@
                 :source-map true
                 :optimizations   :advanced)
     
-    (cljs       :ids #{"browser"}
+    (cljs       :ids #{"renderer"}
                 :source-map true
                 :optimizations   :advanced)
   
-    (target :dir #{"resources/js"})))
+    (target)))
     

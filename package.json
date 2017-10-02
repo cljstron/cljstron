@@ -2,7 +2,7 @@
     "name": "@ivanpierre/app",
     "version": "1.0.11",
     "description": "ClojureScript skeleton in node.js with electron",
-    "main": "resources/main.js",
+    "main": "target/main.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 0",
         "start": "electron ."
@@ -11,9 +11,7 @@
     "license": "ISC",
     "bin": {},
     "dependencies": {
-        "clojurescript-nodejs": "^0.0.8",
-        "closurecompiler-externs": "^1.0.4",
-        "electron": "^1.8.1"
+        "electron": "^1.7.8"
     },
     "devDependencies": {}
 }

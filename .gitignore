@@ -1,7 +1,5 @@
-/resources/jsdev
-/resources/public
-#/resources/*.js
-#/resources/js
+/app/js
+/app/index.js
 /node_modules
 /target
 pom.xml
@@ -10,4 +8,4 @@ pom.xml.asc
 .nrepl-*
 package-lock.json
 .vscode
-build.2.boot
+shadow-cljs main renderer
