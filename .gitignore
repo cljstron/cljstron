@@ -1,5 +1,4 @@
 /app/js
-/app/index.js
 /node_modules
 /target
 pom.xml
@@ -8,4 +7,3 @@ pom.xml.asc
 .nrepl-*
 package-lock.json
 .vscode
-shadow-cljs main renderer

@@ -9,7 +9,7 @@
 
 (defn init []
   (println "start app.main/init")
-  (.on app "ready" create-window)  
+  (.on app "ready" (create-window "app/index.html"))  
   (.on app "window-all-closed" 
-    (when (not= (js/process.platform) "darwin")
+    #(when (not= js/process.platform "darwin")
       (.quit app))))
