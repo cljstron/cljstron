@@ -6,15 +6,15 @@
   :builds
   { :main
     { :target :node-script
-      :output-to "target/main.js"
+      :output-to "main.js"
       :main app.main/init
 
       :compiler-options {}}
 
     :renderer
     { :target :browser
-      :output-dir "app/js"
-      :asset-path "app"
+      :output-dir "public_html/js"
+      :asset-path "public_html"
     
       :compiler-options {}
 
