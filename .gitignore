@@ -2,7 +2,5 @@
 /resources
 /target
 /node_modules
-.lein-*
-.nrepl-*
 package-lock.json
 .vscode
