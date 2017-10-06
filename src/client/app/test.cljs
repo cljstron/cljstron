@@ -1,4 +1,4 @@
-(ns cljselec.renderer.test
+(ns app.renderer.test
   (:require ["electron" :as e :refer ()]
             [cljselec.electron.renderer :as r :refer []]
             [cljselec.electron.common :as c :refer []]))
