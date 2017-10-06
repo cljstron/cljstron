@@ -1,0 +1,1 @@
+{"version":3,"file":"cljselec.electron.renderer.js","sources":["cljselec/electron/renderer.cljs"],"mappings":"","names":[],"sourcesContent":["(ns cljselec.electron.renderer\n  (:require [\"electron\" :as e :refer ()]))\n"]}

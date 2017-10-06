@@ -1,26 +1,27 @@
 ;; shadow-cljs configuration
-{ :source-paths ["src"]
+{
+  :source-paths ["src"]
   
   :dependencies []
-  
+
   :builds
   { :main
     { :target :node-script
       :output-to "main.js"
-      :main app.main/init
+      :main cljselec.app.main/init
 
       :compiler-options {}}
-
-    :renderer
+  
+    :test
     { :target :browser
-      :output-dir "public_html/js"
-      :asset-path "public_html"
+      :output-dir "resources/js"
+      :asset-path "resources"
     
       :compiler-options {}
 
       :modules 
-      { :renderer {:entries [app.renderer]}}
+      { :test {:entries [cljselec.renderer.test]}}
     
       :devtools 
-      { :before-load app.renderer/stop
-        :after-load app.renderer/start}}}}
+      { :before-load cljselec.renderer.test/stop
+        :after-load cljselec.renderer.test/start}}}}

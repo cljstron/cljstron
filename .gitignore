@@ -1,8 +1,6 @@
-/app/js
+/public_html/js
 /node_modules
 /target
-pom.xml
-pom.xml.asc
 .lein-*
 .nrepl-*
 package-lock.json
