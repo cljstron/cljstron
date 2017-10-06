@@ -1,5 +1,5 @@
-/public_html/js
-/node_modules
+/resources/js
+/resoures
 /target
 .lein-*
 .nrepl-*
