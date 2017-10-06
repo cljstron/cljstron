@@ -1,6 +1,7 @@
 /resources/js
 /resoures
 /target
+/node_modules
 .lein-*
 .nrepl-*
 package-lock.json
