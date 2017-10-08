@@ -1,4 +1,4 @@
-(ns cljselec.electron.server
+(ns app.server
   (:require)[cljs.nodejs :as node :refer [process enable-util-print!]] 
             ["electron" :as e :refer [app BrowserWindow]]
             [clojure.string :refer [join]])
@@ -7,7 +7,7 @@
 
 (defn file-url [filename]
   "return normalized url from `filename`"
-  (str "file://" (join "/" [(js* "__dirname") "public_html" filename])))
+  (str "file://" (join "/" [(js* "__dirname") "resources" filename])))
 
 (def main-window (atom nil)) 
 

@@ -1,7 +1,5 @@
-(ns app.renderer.test
-  (:require ["electron" :as e :refer ()]
-            [cljselec.electron.renderer :as r :refer []]
-            [cljselec.electron.common :as c :refer []]))
+(ns app.test
+  (:require ["electron" :as e :refer []]))
 
 ; enable printf redirect to the browser console
 (enable-console-print!)
