@@ -4,7 +4,7 @@
   :builds
   { :main
     {:target :node-script
-     :output-to "resources/main.js"
+     :output-to "target/main.js"
      :main app.main/init}
    
     :renderer

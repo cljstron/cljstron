@@ -1,14 +1,15 @@
 (ns app.main
-  (:require [cljs.nodejs :refer [process enable-util-print!]]
-            [app.electron :refer [electron app BrowserWindow create-window]]))
+  (:require [cljs.nodejs :as node :refer [enable-util-print!]]
+            [electron :refer [app]]
+            [app.elec-cljs :refer [create-window]]))
 
 (enable-util-print!)
 
 (defn ^:export init []
-  (println electron app BrowserWindow)
+  (println "(app.main/init)")
   (.on app "ready" create-window)  
   (.on app "window-all-closed" 
-    (when (not= (.platform js/process) "darwin")
+    #(when (not= js/process.platrorm "darwin")
       (.quit app))))
 
 (set! *main-cli-fn* init)
