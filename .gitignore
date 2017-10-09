@@ -1,13 +1,5 @@
-/resources/jsdev
-/resources/public
-#/resources/*.js
-#/resources/js
+/resources/js
 /node_modules
 /target
-pom.xml
-pom.xml.asc
-.lein-*
-.nrepl-*
 package-lock.json
 .vscode
-build.2.boot
