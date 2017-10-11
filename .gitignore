@@ -1,6 +1,5 @@
 /resources/js
-/resources
-/target
 /node_modules
+/target
 package-lock.json
 .vscode
