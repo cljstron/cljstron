@@ -1,6 +1,6 @@
 (ns app.main
-  (:require [cljs.nodejs :as node :refer [enable-util-print!]]
-            [electron :refer [app]]
+  (:require ["electron" :as electron :refer [app]] 
+            [cljs.nodejs :as node :refer [enable-util-print!]]
             [app.elec-cljs :refer [create-window]]))
 
 (enable-util-print!)

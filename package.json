@@ -3,9 +3,6 @@
     "version": "1.0.12",
     "description": "ClojureScript skeleton in node.js with electron",
     "main": "target/main.js",
-    "scripts": {
-        "start": "electron ."
-    },
     "author": "Ivan Pierre, kilroySoft (2017)",
     "license": "ISC",
     "bin": {},
@@ -13,7 +10,7 @@
         "clojurescript-nodejs": "0.0.8",
         "closurecompiler-externs": "^1.0.4",
         "electron": "^1.8.1",
-        "shadow-cljs": "^2.0.8"
+        "shadow-cljs": "^2.0.10"
     },
     "devDependencies": {}
 }
