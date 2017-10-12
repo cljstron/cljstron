@@ -1,6 +1,5 @@
 (ns app.elec-cljs
   (:require ["electron" :as electron :refer [app BrowserWindow]]
-            ["child_process" :refer [spawn]]
             [cljs.nodejs :as js]
             [clojure.string :refer [join]]))
 

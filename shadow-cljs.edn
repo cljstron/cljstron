@@ -18,8 +18,8 @@
       :compiler-options {}
 
       :modules 
-      {:app {:entries [app.test]}}      
+      {:app {:entries [app.renderer]}}      
       
       :devtools 
-      { :before-load app.test/stop
-        :after-load app.test/start}}}}
+      { :before-load app.renderer/stop
+        :after-load app.renderer/start}}}}
