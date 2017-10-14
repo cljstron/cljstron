@@ -4,10 +4,6 @@
     "description": "ClojureScript skeleton in node.js with electron",
     "main": "target/main.js",
     "author": "Ivan Pierre, (2017)kilroySoft",
-    "repository": {
-        "type": "GitHub",
-        "url": "https://github.com/ivanpierre/cljs-node-electron-boot"
-    },
     "license": "ISC",
     "scripts": {
         "start": "electron ."
