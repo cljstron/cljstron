@@ -1,4 +1,4 @@
-(ns app.elec-cljs
+(ns elec-cljs.main.window
   (:require ["electron" :as electron :refer [app BrowserWindow]]
             [cljs.nodejs :as js]
             [clojure.string :refer [join]]))
@@ -8,10 +8,11 @@
  (str "file://" (join "/" [(js* "__dirname") ".." "resources" filename])))
 
 (def 
-  ^{:doc "Var bound to the currently open windows.
-  `keys` are unique `Keyword` of the window, `values` are `BrowerWindow` instances"
+  ^{:doc "Var bound to the map of currently open windows.
+  `keys` are unique `Keyword` of the window, `values` are `BrowserWindow` instances"
     :jsdoc ["@type {*}"]}
   main-windows (atom {})) 
+
 (defn drop-window [key]
   "Drop `key` entry from main-windows"
   (swap! main-windows dissoc key)
@@ -31,7 +32,9 @@
   (.loadURL (get-window key) (file-url url))
   key)
 
-(defonce window-keys
+(defonce ^private window-keys
+  ^{:doc "Var bound to the map of currently open windows.
+  `keys` are unique `Keyword` of the window, `values` are `BrowserWindow` instances"}
   #{:width :height :show :backgroundColor :parent :modal :x :y 
     :useContentSize :center :minWidth :minHeight :maxWidth :maxHeigth 
     :resizable :movable :minimizable :maximizable :closable :focusable
