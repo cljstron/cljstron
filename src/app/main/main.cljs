@@ -8,7 +8,7 @@
 (defn- load-main-window []
   "create and load `:main` window."
   (-> :main
-    create-window
+    (create-window :background-color "#7e7c29" :has-shadow false)
     (load-window "index.html")))
 
 (defn ^:export init []
