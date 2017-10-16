@@ -5,7 +5,7 @@
             [camel-snake-kebab.core :refer [->camelCaseKeyword]]
             [camel-snake-kebab.extras :refer [transform-keys]]))
 
-(defn- file-url [filename]
+(defn ^:export file-url [filename]
   "return normalized url from `filename` pointing to a file in the resources directory."
  (str "file://" (join "/" [(js* "__dirname") ".." "resources" filename])))
 
@@ -15,24 +15,41 @@
     :jsdoc ["@type {*}"]}
   main-windows (atom {})) 
 
-(defn drop-window [key]
+(defn ^:export drop-window [key]
   "Drop `key` entry from main-windows"
   (swap! main-windows dissoc key)
   key)
 
-(defn add-window [key window]
+(defn ^:export add-window [key window]
   "`window` @ `key` in main-windows' map"
+;  (println "(add-window " key " " window ")")
+;  (println "main-windows : " main-windows)
   (swap! main-windows assoc key window)
   key)
 
-(defn get-window [key]
+(defn ^:export get-window [key]
   "Get the `key` window."
-  (get @main-windows key))
+  (if-let [win (get @main-windows key)]
+    win
+    (println "Error : " key " not found in  main-windows")))
 
-(defn load-window [key url]
+(defn ^:export load-window [key url]
   "Load html page `url` in the `key` window."
   (.loadURL (get-window key) (file-url url))
   key)
+
+(defn get-web-contents [key]
+  (if-let [wc (.. (get-window key)
+                  -webContents)]
+    wc  
+    (println "get-web-content: no webContent")))
+
+(defn exec-on-window [key code]
+  (.. (get-web-contents key) 
+      (executeJavaScript code)
+      (then 
+        #(identity %)
+        #(println "error : " %))))
 
 (defonce ^private window-keys
   ^{:doc "Var bound to the map of currently open windows.
@@ -46,12 +63,11 @@
     :transparent :fullScreenWindowTitle :thickFrame :vibrancy :zoomToPageWidth
     :webPreferences})
 
-(defn create-window 
+(defn ^:export create-window 
   [^Keyword key 
     &{:as key-values}]  
   "Create `key` window from `key-values` and store it in main-windows"
-  (let [temp-win (BrowserWindow. (clj->js (conj {:witdh 800 :height 600} 
-                                                (transform-keys ->camelCaseKeyword key-values))))]
+  (let [temp-win (BrowserWindow. (clj->js (transform-keys ->camelCaseKeyword key-values)))]
     (add-window key temp-win)
     (.on temp-win "close" 
       (fn [] (drop-window key))))

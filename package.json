@@ -11,8 +11,8 @@
     "dependencies": {
         "clojurescript-nodejs": "^0.0.8",
         "closurecompiler-externs": "^1.0.4",
-        "electron": "^1.8.1",
-        "shadow-cljs": "^2.0.17"
+        "electron": "^1.7.9",
+        "shadow-cljs": "^2.0.18"
     },
     "devDependencies": {}
 }

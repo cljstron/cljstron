@@ -2,7 +2,7 @@
 {  
   :source-paths ["src"]
 
-  :dependencies [[camel-snake-kebab "0.4.0"]]
+  :dependencies  [[camel-snake-kebab "0.4.0"]]
 
   :builds
   { :main
@@ -18,7 +18,7 @@
       :compiler-options {}
 
       :modules 
-      {:app {:entries [app.renderer.simple]}}      
+      { :simple {:output-to "js/simple.js" :entries [app.renderer.simple]}}      
       
       :devtools 
       { :before-load app.renderer.simple/stop
