@@ -65,10 +65,42 @@
 
 (defn ^:export create-window 
   [^Keyword key 
-    &{:as key-values}]  
-  "Create `key` window from `key-values` and store it in main-windows"
-  (let [temp-win (BrowserWindow. (clj->js (transform-keys ->camelCaseKeyword key-values)))]
+    &{:as win-conf}]  
+  "Create `key` window from `win-conf` and store it in main-windows.
+  `key` :
+  `win-conf` :key-values for BrowserWindow. 
+  Doc on keys in electron: 
+  https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+  keys can be camelcased or snakecased. ex. alwaysOnTop or always-on-top"
+  (let [temp-win (BrowserWindow. (clj->js (transform-keys ->camelCaseKeyword win-conf)))]
     (add-window key temp-win)
     (.on temp-win "close" 
       (fn [] (drop-window key))))
   key)
+
+(defn)
+
+(defn open-window [key & {:keys [page-url js-urls main win-conf intro-code]}]
+  "create and load `key` window with `keys` arguments.
+  `page-url` : HTML base page url.
+  `js-urls` : sequence of js scripts to include in page.
+  `main` : main function to call when loaded.
+  `win-conf` : map of parameters to create renderer.
+  `intro-code` : optional js code to inject before loading."
+  (-> :main
+    (apply create-window win-conf)
+    (load-window page-url)
+    (exec-on-window  
+      (str "document.write(`
+        <h1>Hello World!</h1>
+        We are using node " process.versions.node ", Chrome " process.versions.chrome
+        ", and Electron " process.versions.electron 
+        (loop [url (seq js-urls) code ""]
+          (if url
+            (recur (seq (rest url)) (str code "<script src='" (first url) "'></script>"))
+            code))
+        "<script>
+            app.renderer.simple.init();
+        </script>"
+        "`);"))))
+
