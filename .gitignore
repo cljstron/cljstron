@@ -1,4 +1,5 @@
 /resources/js
+/resources/main.js
 /node_modules
 /target
 package-lock.json
