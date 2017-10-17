@@ -2,20 +2,19 @@
 {  
   :source-paths ["src"]
 
-  :dependencies  [[camel-snake-kebab "0.4.0"]]
+  :dependencies  [[camel-snake-kebab "0.4.0"]
+                  [reagent "0.8.0-alpha1" :exclusions [cljsjs/create-react-class]]]
 
   :builds
   { :main
     { :target :node-script
-      :output-to "target/main.js"
+      :output-to "resources/main.js"
       :main app.main.main/init}
-
+                      
     :renderer
     { :target :browser
       :output-dir "resources/js"
-      :asset-path "/js"
-    
-      :compiler-options {}
+      :asset-path "js"
 
       :modules 
       { :simple {:output-to "js/simple.js" :entries [app.renderer.simple]}}      

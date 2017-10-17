@@ -1,6 +1,4 @@
-(ns app.renderer.simple
-  (:require ["electron" :as e :refer [remote]])) 
-;            [reagent.core :as r :refer [atom]]))
+(ns app.renderer.simple)
 
 (defn ^:export start []
   (js/console.log "simple - start")

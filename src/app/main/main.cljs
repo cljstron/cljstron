@@ -10,13 +10,18 @@
 (defn- load-main-window []
   "create and load `:main` window."
   (-> :main
-    create-window
+    (create-window)
     (load-window "index.html")
-    (load-window "js/simple.js")
-    #_(exec-on-window  (str "console.log('" (file-url "js/simple") "');
-                          const simple = require('" (file-url "js/simple") "');
-                          console.log('dans execJavaScript' + simple);
-                          simple.init();"))))
+    #_(exec-on-window  
+        (str "document.write(`
+          <h1>Hello World!</h1>
+          We are using node " process.versions.node ", Chrome " process.versions.chrome
+          ", and Electron " process.versions.electron "
+          <script src='js/simple.js'></script>
+          <script>
+              app.renderer.simple.init();
+          </script>
+          `);"))))
 
 (defn ^:export init []
   "`main` entry point."
