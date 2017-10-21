@@ -9,7 +9,7 @@
   { :main
     { :target :node-script
       :output-to "resources/main.js"
-      :main app.main.main/init}
+      :main cljstron.main.main/init}
                       
     :renderer
     { :target :browser
@@ -17,8 +17,8 @@
       :asset-path "js"
 
       :modules 
-      { :simple {:output-to "js/simple.js" :entries [app.renderer.simple]}}      
+      { :simple {:output-to "js/simple.js" :entries [cljstron.renderer.simple]}}      
       
       :devtools 
-      { :before-load app.renderer.simple/stop
-        :after-load app.renderer.simple/start}}}}
+      { :before-load cljstron.renderer.simple/stop
+        :after-load cljstron.renderer.simple/start}}}}

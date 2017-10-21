@@ -1,4 +1,4 @@
-(ns elec-cljs.main.interop
+(ns cljstron.library.main.interop
   (:require [clojure.string :as s]
             [cljs.reader :as r]
             [goog :refer [isNull isObject isFunction]]))
