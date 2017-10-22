@@ -9,7 +9,7 @@ A library to manage and develop `electron` applications in `ClojureScript`... an
   * Centralized configuration storage (`.cljstron`). Storage management is a module.
   * Usable as a `NPM` library.
   * Usable as a `ClojureScript` library (through `clojars`).
-  * Usable as an `electron` application, including base modules to configure one's `IDE` tool, through tool modules that should be composable:
+  * Usable as an `electron` application, with configuration of one's `IDE` through tool modules that should be composable:
     * Editors
     * REPLs
     * State managements
@@ -88,15 +88,15 @@ Compile the `main`and `renderer` applications in development mode:
   * `'shadow-cljs compile main'`
   * `'shadow-cljs compile renderer'`
 
-If you've got errors... you're at work... :grin: Go to the `Edit program` part. And try to figure out why, by reading the error messages.
+If you've got errors... you're at work... :grin: Go to the [`Editing the project`](#editing-the-project) part. And try to figure out why, by reading the error messages.
 
-_I'll try to only push working version, but I'm on a `mac` now, so `Windows` and `Linux` releases have not been tested_.
+_I'll try to only push working versions, but I'm on a `mac` now, so `Windows` and `Linux` releases have not been tested_.
 
 You can also put an issue on the [`project's GitHub repository issues page`](https://github.com/cljstron/cljs-node-electron-boot/issues).
 ### Lanching the project
 It's just :
 
-`'electron .'` ou `'npm start'`
+`'electron .'` or `'npm start'`
 
 Normally you have an open window with infos on the versions of your `eclipse` environment.
 
@@ -115,37 +115,44 @@ You can use whatever editor that support `Clojure` and `ClojureScript`
 
 ou même qui ne le supporte pas. Personellement j'utilise [`Visual Sudio Code`](https://github.com/cljstron/cljs-node-electron-boot/issues) avec les packages `Clojure` (I test for now), `ParInfer`, `Rainbow Brackets` (buggy), and I use the `Integrated Terminal` to lauch compilation as I wait for the `REPL`, `Compilation` and `Reboot On Edit` modules.
 ### Application structure
+    ├== -> generated code     ├**  -> downloaded libraries     
+    [directory]               ├++  -> compiled libraries and runtime in development mode
+                                      all integrated in generated code on production
     .
-    ├── LICENSE                        Licence file
     ├── README.md                      This page
+    ├── [docs]                         Documentation directory
+    │   └── Home.md                    Junk file
+    ├── LICENSE                        Licence file
+    │
     ├── cljs.edn                       Futur project file for cljsjs "Lumo"
     ├── clojure.clj                    Futur project file for leiningen
-    ├── docs                           Documentation directory
-    │   └── Home.md                    Junk file
-    ├── node_modules                   Repository of the npm packages (generated)
-    ├── package-lock.json              Control file of the loaded npm packages (generated)
-    ├── package.json                   Project file for the app as npm package
-    ├── resources                      Public HTML directory for the renderer
-    │   ├── css                        CSS directory
-    │   ├── index.html                 Template for an empty HTML page
-    │   ├── js                         Renderer executables (generated)
-    │   │   ├── cljs_runtime           Library runtime
-    │   │   ├── manifest.json          Manifest of library runtime
-    │   │   └── simple.js              The compiled main program for the renderer
-    │   └── main.js                    The compiled main program of the application (generated)
+    ├── project.boot                   Futur project file for boot
     ├── shadow-cljs.edn                The working project file for shadow-cljs
-    ├── src                            Sources root
-    │   └── cljstron                   Root of the project
-    │       ├── library                Library of helper functions for electron
-    │       │   ├── main               Root for helper function for main application
-    │       │   │   ├── interop.cljs   A file to translate recursively JS->CLJS structures (unused)
-    │       │   │   └── window.cljs    Helper for windows management, containers of renderers
-    │       │   ├── common             Root for helper function for both applications
-    │       │   └── renderer           Root for helper function for renderer application
-    │       ├── main                   Main application sources
-    │       │   └── main.cljs          Entry point for main. Open the window
-    │       └── renderer               Renderer application sources
-    │           └── simple.cljs        Entry point for renderer. (in fact a module)
-    └── target                         AOT, cache and runtime of main application (generated)
+    ├── package.json                   Project file for the application as npm package
+    │
+    ├** package-lock.json              Control file for the loaded npm packages
+    ├** [node_modules]                 Repository of the npm packages
+    │
+    ├++ [target]                       Compiled AOT, cache and runtime of main application libraries
+    ├── [resources]                    Public HTML root directory for the renderer
+    │   ├── [css]                      CSS directory
+    │   ├── index.html                 Template for an empty HTML page
+    │   ├== [js]                       Compiled AOT, cache an executables for renderer
+    │   │   ├++ [cljs_runtime]         Library and runtime for renderer
+    │   │   ├++ manifest.json          Manifest of library and runtime
+    │   │   └== simple.js              The compiled main program for the renderer
+    │   └== main.js                    The compiled main program of the application
+    └── [src]                          Sources root
+        └── [cljstron]                 Root of the project
+            ├── [library]              Library of helper functions for electron
+            │   ├── [main]             Root for helper function for main application
+            │   │   ├── interop.cljs   A file to translate recursively JS->CLJS structures (unused)
+            │   │   └── window.cljs    Helper for windows management, containers of renderers
+            │   ├── [common]           Root for helper function for both applications
+            │   └── [renderer]         Root for helper function for renderer application
+            ├── [main]                 Main application sources
+            │   └── main.cljs          Entry point for main. Open the window
+            └── [renderer]             Renderer application sources
+                └── simple.cljs        Entry point for renderer. (in fact a module)
                 
-A last thing... the doc for `electron` is here. It may help... :innocent:
+A last thing... the doc for `electron` is [`here`](https://electron.atom.io/docs/). It may help... :innocent:
