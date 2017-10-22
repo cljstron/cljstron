@@ -10,7 +10,17 @@ A library to manage and develop `electron` applications in `ClojureScript`... an
   * Centralized configuration storage (`.cljstron`). Storage management is a module.
   * Usable as a `NPM` library.
   * Usable as a `ClojureScript` library (through `clojars`).
-  * Usable as an `electron` application, including base modules to configure one's `IDE` tool.
+  * Usable as an `electron` application, including base modules to configure one's `IDE` tool, through tool modules that should be composable:
+    * Editors
+    * REPLs
+    * State managements
+    * Sandboxes (`DevCards`, ...)
+    * Project management
+    * Compilers
+    * Linters
+    * Configuration tools
+    * Packagers
+    * ...
   * Monitoring of an external `electron` project. (module(s)?)
   * Compiler agnostic. Compiler is a module. Idea, to be able to integrate every language compiling in `JavaScriopt`.
   * Editor agnostic. Editor should be a module.
@@ -29,10 +39,10 @@ A library to manage and develop `electron` applications in `ClojureScript`... an
     * Mobile client
     * One Page Application (`OPA`)
     * Standalone server 
-    * etc. :sweat:
+    * ... :sweat:
 
 ## State of project
-*_Project is now a WIP in pre-alpha stage as of 22th of October 2017_*. :mask:
+**_Project is now a WIP in pre-alpha stage as of 22th of October 2017_**. :mask:
 
 It is only as for now a simple experimental `electron` app used as a sandbox.
 
@@ -47,3 +57,9 @@ It is only as for now a simple experimental `electron` app used as a sandbox.
 
 ### Clojars
   * [`[camel-snake-kebab "0.4.0"]`](https://github.com/qerub/camel-snake-kebab) It's used to manage `snake-case`d and `camelCase`d keys. I will change to the `camel-case` library included in `electron` package, or not... :wink:
+
+## Installation
+
+As it's an alpha release, I suppose you already know how to install programs and the configuration of your computer... :yum:
+
+### Prerequites
