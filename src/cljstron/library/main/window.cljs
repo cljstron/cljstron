@@ -29,7 +29,7 @@
   "Get the `key` window."
   (if-let [win (get @main-windows key)]
     win
-    (println "Error : " key " not found in  main-windows")))
+    (println "Error : " key " not found in main-windows")))
 
 (defn ^:export load-window [^Keyword key ^String url]
   "Load html page `url` in the `key` window."
@@ -45,13 +45,10 @@
 (defn exec-on-window [^Keyword key & ^String code]
   (when-let [code (seq code)]
     (.. (get-web-contents key) 
-        (executeJavaScript 
-          (str  "document.write(`" 
-                (apply str code)
-                "`);"))
+        (executeJavaScript (str  "document.write(`" (apply str code) "`);"))
         (then 
           #(identity %)
-          #(println "error in exec-on-window: " key \" % \")))))
+          #(println "error in exec-on-window: " key " code : " \" code \" "->" \" % \")))))
 
 (defonce ^private window-keys
   ^{:doc "Var bound to the map of currently open windows.
@@ -66,8 +63,7 @@
     :webPreferences})
 
 (defn ^:export create-window 
-  [^Keyword key 
-    &{:as win-conf}]   
+  [^Keyword key win-conf]   
   "Create `key` window from `win-conf` and store it in main-windows.
   `key` :
   `win-conf` : key-values for BrowserWindow. 
@@ -115,7 +111,7 @@
   `win-conf` : map of parameters to create renderer.
   `intro-js-code` : optional js code to inject before loading."
   (-> key
-    (apply create-window win-conf)
+    (create-window win-conf)
     (load-window page-url)
     (exec-on-window  
       (include-code intro-js-code)
