@@ -36,7 +36,7 @@
   (when url (.loadURL (get-window key) (file-url url)))
   key)
 
-(defn get-web-contents [^Keyword key]
+(defn-sc get-web-contents [^Keyword key]
   (if-let [wc (.. (get-window key)
                   -webContents)]
     wc  
@@ -115,7 +115,6 @@
     (create-window win-conf)
     (load-window page-url)
     (exec-on-window 
-      (println key "code ->" intro-html "js-urls ->" js-urls)
       (include-code intro-html)
       (include-scripts js-urls)
       (include-main-call main-fn))))

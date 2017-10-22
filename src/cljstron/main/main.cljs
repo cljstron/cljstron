@@ -21,8 +21,6 @@
 
 (defn ^:export init []
   "`main` entry point."
-  (println "(init)")
-  (println app)
   (.on app "ready" open-main-window)  
   (.on app "window-all-closed" 
     #(when (not= js/process.platform "darwin")

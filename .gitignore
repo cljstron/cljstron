@@ -4,3 +4,6 @@
 /target
 package-lock.json
 .vscode
+*.log
+package-lock.json
+
