@@ -9,13 +9,15 @@
 (defn- open-main-window []
   "open the :main window"
   (open-window :main
-    { :js-urls    ["js/simple.js"]
-      :main       "cljstron.renderer.simple.init"
-      :win-conf   {}
-      :intro-code (str "`
-        <h1>Hello World!</h1>
-        We are using node " process.versions.node ", Chrome " process.versions.chrome)
-        ", and Electron " process.versions.electron}))
+    :js-urls    ["js/simple.js"]
+    :main       "cljstron.renderer.simple.init"
+    :win-conf   {}
+    :intro-html (str  "<h1>Hello World!</h1> We are using node " 
+                      process.versions.node 
+                      ", Chrome " 
+                      process.versions.chrome
+                      ", and Electron " 
+                      process.versions.electron)))
 
 (defn ^:export init []
   "`main` entry point."

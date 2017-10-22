@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "electron": "^1.7.9",
-        "shadow-cljs": "^2.0.10"
+        "shadow-cljs": "^2.0.34"
     },
     "devDependencies": {}
 }

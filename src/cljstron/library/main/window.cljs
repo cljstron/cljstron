@@ -90,6 +90,7 @@
   "Include `code` as JavaScript code.
   `code` : JavaScript code to execute as a String.
   Nil value for `code` includes nothing."
+  (println "code -> " code)
   (if code 
     (str code) 
     ""))
@@ -102,18 +103,19 @@
     (str "<script>" function "();</script>")
     ""))
 
-(defn ^export open-window [^Keyword key &{:keys [page-url js-urls main-fn win-conf intro-js-code]
+(defn ^export open-window [^Keyword key &{:keys [page-url js-urls main-fn win-conf intro-html]
                                           :or {page-url "index.html"}}]
   "create and load `key` window with `keys` arguments.
   `page-url` : HTML base page url.
   `js-urls` : sequence of js scripts to include in page.
   `main` : main function to call when loaded.
   `win-conf` : map of parameters to create renderer.
-  `intro-js-code` : optional js code to inject before loading."
+  `intro-html` : optional html code to inject before loading."
   (-> key
     (create-window win-conf)
     (load-window page-url)
-    (exec-on-window  
-      (include-code intro-js-code)
+    (exec-on-window 
+      (println key "code ->" intro-html "js-urls ->" js-urls)
+      (include-code intro-html)
       (include-scripts js-urls)
       (include-main-call main-fn))))
