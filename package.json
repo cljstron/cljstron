@@ -8,9 +8,9 @@
     "scripts": {
         "start": "electron ."
     },
-    "dependencies": {
+    "dependencies": {},
+    "devDependencies": {
         "electron": "^1.8.1",
         "shadow-cljs": "^2.0.34"
-    },
-    "devDependencies": {}
+    }
 }

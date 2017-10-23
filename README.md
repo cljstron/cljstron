@@ -134,25 +134,38 @@ ou même qui ne le supporte pas. Personellement j'utilise [`Visual Sudio Code`](
     ├** [node_modules]                 Repository of the npm packages
     │
     ├++ [target]                       Compiled AOT, cache and runtime of main application libraries
+    │
     ├── [resources]                    Public HTML root directory for the renderer
-    │   ├── [css]                      CSS directory
-    │   ├── index.html                 Template for an empty HTML page
-    │   ├== [js]                       Compiled AOT, cache an executables for renderer
-    │   │   ├++ [cljs_runtime]         Library and runtime for renderer
-    │   │   ├++ manifest.json          Manifest of library and runtime
-    │   │   └== simple.js              The compiled main program for the renderer
+    │   ├── [plugs]                    Directory of plugins' resources
+    │   │   └── [cljstron_simple]      Resources for a plug
+    │   │       ├── plug.edn           Plugin descriptor, windows, menus, dependences, ...
+    │   │       ├── [css]              CSS directory
+    │   │       ├── index.html         Optional HTML pages
+    │   │       └== [js]               Compiled AOT, cache an executables for renderer
+    │   │           ├++ [cljs-runtime] Library and runtime for renderer
+    │   │           ├++ manifest.json  Manifest of libraries and runtime
+    │   │           └== simple.js      The compiled main program for the renderer
+    │   │
+    │   ├── app.edn                    Application descriptor
+    │   ├── index.html                 Empty page to create content from javascript
     │   └== main.js                    The compiled main program of the application
+    │
     └── [src]                          Sources root
-        └── [cljstron]                 Root of the project
-            ├── [library]              Library of helper functions for electron
-            │   ├── [main]             Root for helper function for main application
-            │   │   ├── interop.cljs   A file to translate recursively JS->CLJS structures (unused)
-            │   │   └── window.cljs    Helper for windows management, containers of renderers
-            │   ├── [common]           Root for helper function for both applications
-            │   └── [renderer]         Root for helper function for renderer application
-            ├── [main]                 Main application sources
-            │   └── main.cljs          Entry point for main. Open the window
-            └── [renderer]             Renderer application sources
-                └── simple.cljs        Entry point for renderer. (in fact a module)
-                
+        │
+        ├── [cljstron]                 Root of cljstron library
+        │   ├── [main]                 Root for helper function for main application
+        │   │   ├── interop.cljs       A file to translate recursively JS->CLJS structures (unused)
+        │   │   └── window.cljs        Helper for windows management, containers of renderers
+        │   ├── [common]               Root for helper function for both applications
+        │   └── [renderer]             Root for helper function for renderer application
+        │
+        ├── [cljstron_simple]          Sources for plug
+        │   ├── [main]                 Main plug sources
+        │   │   └── main.cljs          Source for main. Manage the windows and events
+        │   ├── [common]               Both main and renderer plug sources
+        │   └── [renderer]             Renderer plug sources
+        │       └── simple.cljs        Source for renderer.
+        │
+        └── main.cljs                  Main entry point. Activate cljstron_simple 
+
 A last thing... the doc for `electron` is [`here`](https://electron.atom.io/docs/). It may help... :innocent:

@@ -1,4 +1,4 @@
-(ns cljstron.renderer.simple)
+(ns cljstron-simple.renderer.main)
 
 (defn ^:export start []
   (js/console.log "simple - start")

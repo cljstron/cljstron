@@ -1,16 +1,16 @@
-(ns cljstron.main.main
+(ns cljstron-simple.main.main
   (:require 
     [electron :refer [app]]
     [cljs.nodejs :refer [enable-util-print!]]
-    [cljstron.library.main.window :refer [open-window]]))
+    [cljstron.main.window :refer [open-window]]))
 
 (enable-util-print!)
 
 (defn- open-main-window []
   "open the :main window"
   (open-window :main
-    :js-urls    ["js/simple.js"]
-    :main       "cljstron.renderer.simple.init"
+    :js-urls    ["js/main.js"]
+    :main       "cljstron_simple.renderer.main.init"
     :win-conf   {}
     :intro-html (str  "<h1>Hello World!</h1> We are using node " 
                       process.versions.node 

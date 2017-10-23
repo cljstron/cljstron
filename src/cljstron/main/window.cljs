@@ -1,4 +1,4 @@
-(ns cljstron.library.main.window
+(ns cljstron.main.window
   (:require [electron :refer [app BrowserWindow]]
             [cljs.nodejs :as js]
             [clojure.string :refer [join]]
@@ -36,7 +36,7 @@
   (when url (.loadURL (get-window key) (file-url url)))
   key)
 
-(defn-sc get-web-contents [^Keyword key]
+(defn- get-web-contents [^Keyword key]
   (if-let [wc (.. (get-window key)
                   -webContents)]
     wc  
