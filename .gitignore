@@ -6,4 +6,4 @@ package-lock.json
 .vscode
 *.log
 package-lock.json
-/ressources/**/js
+**/js
