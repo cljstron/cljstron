@@ -1,0 +1,20 @@
+[{"module-id":"simple",
+  "name":"simple",
+  "output-name":"simple.js",
+  "js-name":"simple.js",
+  "entries":
+  ["shadow.cljs.devtools.client.console",
+   "cljstron-simple.renderer.main"],
+  "depends-on":null,
+  "sources":
+  ["goog/base.js", "goog/debug/error.js", "goog/dom/nodetype.js",
+   "goog/string/string.js", "goog/asserts/asserts.js",
+   "goog/reflect/reflect.js", "goog/math/long.js",
+   "goog/math/integer.js", "goog/object/object.js",
+   "goog/array/array.js", "goog/structs/structs.js",
+   "goog/functions/functions.js", "goog/math/math.js",
+   "goog/iter/iter.js", "goog/structs/map.js", "goog/uri/utils.js",
+   "goog/uri/uri.js", "goog/string/stringbuffer.js", "cljs/core.cljs",
+   "clojure/string.cljs", "shadow/cljs/devtools/client/console.cljs",
+   "cljstron_simple/renderer/main.cljs",
+   "shadow/module/simple/append.js"]}]
