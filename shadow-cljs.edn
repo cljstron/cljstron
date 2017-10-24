@@ -9,8 +9,13 @@
     { :target :node-script
       :output-to "resources/main.js"
       :main main.main/init}
-                      
-    :renderer
+                    
+    :main-simple
+    { :target :node-script
+      :output-to "resources/plugs/cljstron_simple/main.js"
+      :main cljstron-simple.main/init}
+
+    :renderer-simple
     { :target :browser
       :output-dir "resources/plugs/cljstron_simple/js"
       :asset-path "js"

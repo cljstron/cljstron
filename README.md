@@ -65,28 +65,28 @@ As it's an alpha release, I suppose you already know how to install programs and
   * Not mandatory but useful, a node version selector [`nvm`](https://github.com/creationix/nvm#install-script) so you can play with the lastest `node.js` version.
     * if you do it, change version before proceeding...
   * with `npm` install :
-    * latest version of `npm` : `'npm i -g "npm@latest"'`
-    * `shadow-cljs` : `'npm i -g "shadow-cljs"'`
-    * `electron` : `'npm i -g "electron@1.8.1"'`
+    * latest version of `npm` : `npm i -g "npm@latest"`
+    * `shadow-cljs` : `npm i -g "shadow-cljs"`
+    * `electron` : `npm i -g "electron@1.8.1"`
 ### Installing project
 Go in a developpement directory or create it.
 
 create and download the project directory :
 
-`'git clone https://github.com/cljstron/cljs-node-electron-boot.git'`
+`git clone https://github.com/cljstron/cljs-node-electron-boot.git`
 
 You should be in the project directory :
 
-`'cd cljs-node-electron-boot'`
+`cd cljs-node-electron-boot`
 
 And download the needed libraries :
 
-`'npm i --save'`
+`npm install`
 ### Compiling project
 Compile the `main`and `renderer` applications in development mode:
 
-  * `'shadow-cljs compile main'`
-  * `'shadow-cljs compile renderer'`
+  * `shadow-cljs compile main`
+  * `shadow-cljs compile renderer`
 
 If you've got errors... you're at work... :grin: Go to the [`Editing the project`](#editing-the-project) part. And try to figure out why, by reading the error messages.
 
@@ -96,9 +96,9 @@ You can also put an issue on the [`project's GitHub repository issues page`](htt
 ### Lanching the project
 It's just :
 
-`'electron .'` or `'npm start'`
+`electron .` or `npm start`
 
-Normally you have an open window with infos on the versions of your `eclipse` environment.
+Normally you have an open window with infos on the versions of your `electron` environment.
 
 For `mac` users, closing the windows doesn't stop the program, you have to go to the menu and close the application. Bad `mac` habit, but you can change it, see editing code.
 ### Editing the project
@@ -113,7 +113,7 @@ You can use whatever editor that support `Clojure` and `ClojureScript`
   * IntelliJ
   * ...
 
-ou même qui ne le supporte pas. Personellement j'utilise [`Visual Sudio Code`](https://github.com/cljstron/cljs-node-electron-boot/issues) avec les packages `Clojure` (I test for now), `ParInfer`, `Rainbow Brackets` (buggy), and I use the `Integrated Terminal` to lauch compilation as I wait for the `REPL`, `Compilation` and `Reboot On Edit` modules.
+or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron/cljs-node-electron-boot/issues) with0 `Clojure` (I test for now), `ParInfer`, `Rainbow Brackets` (buggy) packages, and I use the `Integrated Terminal` to lauch compilation as I wait for the `REPL`, `Compilation` and `Reboot On Edit` modules.
 ### Application structure
     ├== -> generated code     ├**  -> downloaded libraries     
     [directory]               ├++  -> compiled libraries and runtime in development mode
