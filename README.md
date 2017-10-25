@@ -135,6 +135,10 @@ or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron
     │
     ├++ [target]                       Compiled AOT, cache and runtime of main application libraries
     │
+    ├── [plugs]                        Plugs to be tested only in dev mode
+    │
+    ├── app.edn                        Configuration file for application
+    │
     ├── [resources]                    Public HTML root directory for the renderer
     │   ├── [plugs]                    Directory of plugins' resources
     │   │   └── [cljstron_simple]      Resources for a plug

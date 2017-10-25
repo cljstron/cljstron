@@ -1,6 +1,6 @@
 (ns main.main
     (:require 
-        ["resources/plugs/" :as simple]))
+        ["plugs/cljstron-simple" :as simple]))
   
 (defn init [] (simple/init))
 

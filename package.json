@@ -1,25 +1,28 @@
 {
-    "name": "@ivanpierre/app",
-    "version": "1.0.13",
-    "description": "ClojureScript skeleton in node.js with electron",
-    "main": "resources/main.js",
-    "author": "Ivan Pierre, (2017)kilroySoft",
-    "license": "ISC",
-    "keywords": [
-        "electron", "clojurescript", "node.js", "nodejs"
-    ],
-    "homepage": "https://github.com/cljstron/cljs-node-electron-boot/blob/master/README.md",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/cljstron/cljs-node-electron-boot.git"
-    },
-    "scripts": {
-        "start": "electron ."
-    },
-    "dependencies": {},
-    "devDependencies": {
-        "electron": "^1.8.1",
-        "shadow-cljs": "^2.0.34",
-        "@ivanpierre/cljstron-simple": "^0.0.3"
-    }
+  "name": "@ivanpierre/app",
+  "version": "1.0.13",
+  "description": "ClojureScript skeleton in node.js with electron",
+  "main": "resources/main.js",
+  "author": "Ivan Pierre, (2017)kilroySoft",
+  "license": "ISC",
+  "keywords": [
+    "electron",
+    "clojurescript",
+    "node.js",
+    "nodejs"
+  ],
+  "homepage": "https://github.com/cljstron/cljs-node-electron-boot/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cljstron/cljs-node-electron-boot.git"
+  },
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@ivanpierre/cljstron-simple": "^0.0.3",
+    "electron": "^1.8.1",
+    "shadow-cljs": "^2.0.41"
+  }
 }
