@@ -114,29 +114,35 @@ You can use whatever editor that support `Clojure` and `ClojureScript`
   * ...
 
 or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron/cljs-node-electron-boot/issues) with0 `Clojure` (I test for now), `ParInfer`, `Rainbow Brackets` (buggy) packages, and I use the `Integrated Terminal` to lauch compilation as I wait for the `REPL`, `Compilation` and `Reboot On Edit` modules.
-### Application structure
-    ├== -> generated code            ├**  -> downloaded libraries     
-    [directory]                      ├++  -> compiled libraries and runtime in development mode
-    ['directory'] parametered                all integrated in generated code on production
-    .
+## Application structure
+### Links signification
+    ├== -> generated code            
+    ├** -> downloaded libraries, all integrated in generated code on production
+    ├++ -> compiled libraries and runtime in development mode
+    ├oo -> optional (for developpement phase)                           
+    [directory]                      
+    ['parametered directory'] defined in app.edn 
+
+### File structure of project              
+#### Documentation
     ├── README.md                      This page
     ├── [docs]                         Documentation directory
     │   └── Home.md                    Junk file
     ├── LICENSE                        Licence file
-    │
-    ├── cljs.edn                        Futur project file for cljsjs "Lumo"
-    ├── clojure.clj                     Futur project file for leiningen
-    ├── project.boot                    Futur project file for boot
-    ├── shadow-cljs.edn                 The working project file for shadow-cljs
-    ├── package.json                    Project file for the application as npm package
-    │
+#### Makefiles
+    ├-- cljs.edn                        Futur project file for cljsjs "Lumo"
+    ├-- clojure.clj                     Futur project file for leiningen
+    ├-- project.boot                    Futur project file for boot
+    ├-- shadow-cljs.edn                 The working project file for shadow-cljs
+#### NPM
+    ├-- package.json                    Definition of the npm package
     ├** package-lock.json               Control file for the loaded npm packages
     ├** [node_modules]                  Repository of the npm packages
-    │
+#### Runtime Data
     ├++ [target]                        Compiled AOT, cache and runtime of main application libraries
-    │
-    ├── [plugs]                         Plugs to be tested only in dev mode
-    │
+#### Developpement Stuff
+    ├oo [plugs]                         Plugs to be tested only in dev mode
+#### Resources For Library
     ├── ['resources']                   Public HTML root directory for the renderer
     │   │   ├── [css]                   CSS directory for application
     │   │   └== [js]                    Compiled AOT, cache an executables for renderer
@@ -147,8 +153,9 @@ or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron
     │   ├── app.edn                     Application descriptor
     │   ├── index.html                  Empty page to create content from javascript
     │   ├== lib.js                      The compiled library for main
-    │   └== main.js                     The compiled main program of the application
-    │
+#### Resources For Dev And Debug
+    │   └oo main.js                     The compiled main program of the application
+#### Sources
     └── ['src']                         Sources root
         │
         ├── [cljstron]                  Root of cljstron library
@@ -158,7 +165,8 @@ or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron
         │   │   └── browser-window.cljs Windows management, containers of renderers
         │   ├── [common]                Root for helper function for both applications
         │   └── [renderer]              Root for helper function for renderer application
-        │
-        └── main.cljs                   Optional main entry point. Activate plugs 
+#### Sources For Dev And Debug
+        └oo [main]                      Optional main entry point. Activate plugs 
+            └oo main.cljs               Main entry point for developpement phase
 
 A last thing... the doc for `electron` is [`here`](https://electron.atom.io/docs/). It may help... :innocent:
