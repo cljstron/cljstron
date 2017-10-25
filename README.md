@@ -115,61 +115,50 @@ You can use whatever editor that support `Clojure` and `ClojureScript`
 
 or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron/cljs-node-electron-boot/issues) with0 `Clojure` (I test for now), `ParInfer`, `Rainbow Brackets` (buggy) packages, and I use the `Integrated Terminal` to lauch compilation as I wait for the `REPL`, `Compilation` and `Reboot On Edit` modules.
 ### Application structure
-    ├== -> generated code     ├**  -> downloaded libraries     
-    [directory]               ├++  -> compiled libraries and runtime in development mode
-                                      all integrated in generated code on production
+    ├== -> generated code            ├**  -> downloaded libraries     
+    [directory]                      ├++  -> compiled libraries and runtime in development mode
+    ['directory'] parametered                all integrated in generated code on production
     .
     ├── README.md                      This page
     ├── [docs]                         Documentation directory
     │   └── Home.md                    Junk file
     ├── LICENSE                        Licence file
     │
-    ├── cljs.edn                       Futur project file for cljsjs "Lumo"
-    ├── clojure.clj                    Futur project file for leiningen
-    ├── project.boot                   Futur project file for boot
-    ├── shadow-cljs.edn                The working project file for shadow-cljs
-    ├── package.json                   Project file for the application as npm package
+    ├── cljs.edn                        Futur project file for cljsjs "Lumo"
+    ├── clojure.clj                     Futur project file for leiningen
+    ├── project.boot                    Futur project file for boot
+    ├── shadow-cljs.edn                 The working project file for shadow-cljs
+    ├── package.json                    Project file for the application as npm package
     │
-    ├** package-lock.json              Control file for the loaded npm packages
-    ├** [node_modules]                 Repository of the npm packages
+    ├** package-lock.json               Control file for the loaded npm packages
+    ├** [node_modules]                  Repository of the npm packages
     │
-    ├++ [target]                       Compiled AOT, cache and runtime of main application libraries
+    ├++ [target]                        Compiled AOT, cache and runtime of main application libraries
     │
-    ├── [plugs]                        Plugs to be tested only in dev mode
+    ├── [plugs]                         Plugs to be tested only in dev mode
     │
-    ├── app.edn                        Configuration file for application
-    │
-    ├── [resources]                    Public HTML root directory for the renderer
-    │   ├── [plugs]                    Directory of plugins' resources
-    │   │   └── [cljstron_simple]      Resources for a plug
-    │   │       ├── plug.edn           Plugin descriptor, windows, menus, dependences, ...
-    │   │       ├── [css]              CSS directory
-    │   │       ├── index.html         Optional HTML pages
-    │   │       └== [js]               Compiled AOT, cache an executables for renderer
-    │   │           ├++ [cljs-runtime] Library and runtime for renderer
-    │   │           ├++ manifest.json  Manifest of libraries and runtime
-    │   │           └== simple.js      The compiled main program for the renderer
+    ├── ['resources']                   Public HTML root directory for the renderer
+    │   │   ├── [css]                   CSS directory for application
+    │   │   └== [js]                    Compiled AOT, cache an executables for renderer
+    │   │           ├++ [cljs-runtime]  Library and runtime for renderer
+    │   │           ├++ manifest.json   Manifest of libraries and runtime
+    │   │           └== lib.js          The compiled library for the renderer
     │   │
-    │   ├── app.edn                    Application descriptor
-    │   ├── index.html                 Empty page to create content from javascript
-    │   └== main.js                    The compiled main program of the application
+    │   ├── app.edn                     Application descriptor
+    │   ├── index.html                  Empty page to create content from javascript
+    │   ├== lib.js                      The compiled library for main
+    │   └== main.js                     The compiled main program of the application
     │
-    └── [src]                          Sources root
+    └── ['src']                         Sources root
         │
-        ├── [cljstron]                 Root of cljstron library
-        │   ├── [main]                 Root for helper function for main application
-        │   │   ├── interop.cljs       A file to translate recursively JS->CLJS structures (unused)
-        │   │   └── window.cljs        Helper for windows management, containers of renderers
-        │   ├── [common]               Root for helper function for both applications
-        │   └── [renderer]             Root for helper function for renderer application
+        ├── [cljstron]                  Root of cljstron library
+        │   ├── [main]                  Root for helper function for main application
+        │   │   ├── interop.cljs        Translate recursively JS->CLJS structures (unused)
+        │   │   ├── plugs.cljs          Plugs management. Require, launch         
+        │   │   └── browser-window.cljs Windows management, containers of renderers
+        │   ├── [common]                Root for helper function for both applications
+        │   └── [renderer]              Root for helper function for renderer application
         │
-        ├── [cljstron_simple]          Sources for plug
-        │   ├── [main]                 Main plug sources
-        │   │   └── main.cljs          Source for main. Manage the windows and events
-        │   ├── [common]               Both main and renderer plug sources
-        │   └── [renderer]             Renderer plug sources
-        │       └── simple.cljs        Source for renderer.
-        │
-        └── main.cljs                  Main entry point. Activate cljstron_simple 
+        └── main.cljs                   Optional main entry point. Activate plugs 
 
 A last thing... the doc for `electron` is [`here`](https://electron.atom.io/docs/). It may help... :innocent:

@@ -1,0 +1,5 @@
+{ :resources "resour"
+  :plugs
+  { :local {:cljstron/cljstron-simple {:key :main}}
+    :git {} 
+    :npm {}}}
