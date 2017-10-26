@@ -1,4 +1,4 @@
-(ns cljstron.main.interop
+(ns cljstron.common.interop
   (:require [clojure.string :as s]
             [cljs.reader :as r]
             [goog :refer [isNull isObject isFunction]]))
@@ -19,21 +19,21 @@
     #(call-func jsobj %2 %1)
     #(call-func jsobj % nil)))
 
-(declare ^private rjs->clj)
+(declare rjs->clj)
 
 (defn- key-maker [jsobj pair]
-  (vector (read-key (key pair)) (myjs->clj (val pair) jsobj)))
+  (vector (read-key (key pair)) (rjs->clj (val pair) jsobj)))
 
 (defn- read-obj
   [jsobj parent-obj]
   (let [obj (js->clj jsobj)]
     (cond
       (map? obj)    (into {} (map #(key-maker jsobj %) (seq obj)))
-      (vector? obj) (into [] (map #(myjs->clj % parent-obj) (seq obj))))))
+      (vector? obj) (into [] (map #(rjs->clj % parent-obj) (seq obj))))))
 
-(defn rjs->clj
+(defn ^:export rjs->clj
   ( [jsobj]
-    (myjs->clj jsobj nil))
+    (rjs->clj jsobj nil))
   ( [jsobj parent-obj]
     (cond
       (isNull jsobj)   nil

@@ -1,4 +1,4 @@
-(ns cljstron.main.window
+(ns cljstron.browser.window
   (:require [electron :refer [app BrowserWindow]]
             [cljs.nodejs :as js]
             [clojure.string :refer [join]]

@@ -1,28 +1,20 @@
 ;; shadow-cljs configuration
 {  
-  :source-paths ["src" "src_plugs"]
+  :source-paths ["src"]
 
   :dependencies  [[camel-snake-kebab "0.4.0"]]
 
   :builds
-  { :main
+  { :main 
     { :target :node-script
       :output-to "resources/main.js"
-      :main main.main/init}
-                    
-    :main-simple
-    { :target :node-script
-      :output-to "resources/plugs/cljstron_simple/main.js"
-      :main cljstron-simple.main/init}
+      :main main.main/init}}}
+    
+    ; :renderer                
+    ; { :target :browser
+    ;   :output-dir "resources/js"
+    ;   :asset-path "js"
 
-    :renderer-simple
-    { :target :browser
-      :output-dir "resources/plugs/cljstron_simple/js"
-      :asset-path "js"
-
-      :modules 
-      { :simple {:output-to "js/main.js" :entries [cljstron-simple.renderer.main]}}      
+    ;   :modules 
+    ;   { :renderer {:entries []}}}]}      
       
-      :devtools 
-      { :before-load cljstron-simple.renderer.main/stop
-        :after-load cljstron-simple.renderer.main/start}}}}

@@ -114,7 +114,7 @@ You can use whatever editor that support `Clojure` and `ClojureScript`
   * ...
 
 or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron/cljs-node-electron-boot/issues) with0 `Clojure` (I test for now), `ParInfer`, `Rainbow Brackets` (buggy) packages, and I use the `Integrated Terminal` to lauch compilation as I wait for the `REPL`, `Compilation` and `Reboot On Edit` modules.
-## Application structure
+## Library structure
 ### Links signification
     ├== -> generated code            
     ├** -> downloaded libraries, all integrated in generated code on production
