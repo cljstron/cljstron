@@ -73,7 +73,7 @@
   (let [temp-win (BrowserWindow. (clj->js (transform-keys ->camelCaseKeyword win-conf)))]
     (add-window key temp-win)
     (.on temp-win "close" 
-      (fn [] (drop-window key))))
+      #(drop-window key)))
   key)
 
 ; TODO include css scripts too
