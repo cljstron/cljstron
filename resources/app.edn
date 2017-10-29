@@ -1,5 +1,14 @@
-{ :resources "resour"
+{ :user "cljstron"
+  :project :user
+  :resources "resources"
+  :exec "main"
+  :git {:root "https://github.com" :user :user :project :project} 
+  :npm {:user :user :project :project}
+  :browser [main ".js"]
+  :browser-exec [:project ".browser." :exec "/" :exec]
+  :renderer [:resources "/js/" main ".js"]
   :plugs
-  { :local {:cljstron/cljstron-simple {:key :main}}
-    :git {} 
-    :npm {}}}
+  { :project "cljstron-simple"}}     
+    
+    
+    

@@ -21,7 +21,7 @@ A library to manage and develop `electron` applications in `ClojureScript`... an
     * Packagers
     * ...
   * Monitoring of an external `electron` project. (module(s)?)
-  * Compiler agnostic. Compiler is a module. Idea, to be able to integrate every language compiling in `JavaScriopt`.
+  * Compiler agnostic. Compiler is a module. Idea, to be able to integrate every language compiling in `JavaScript`.
   * Editor agnostic. Editor should be a module.
   * Modules are language agnostic. The library and modules have a clear `JavaScript` `API` for inter-operation.
   * A `Java` (minimum 8) version of the `main` process : .
@@ -48,10 +48,9 @@ It is only as for now a simple experimental `electron` app used as a sandbox.
   * GitHub repository: https://github.com/cljstron/cljs-node-electron-boot. First beta version will be moved to `cljstron/CLJStron` repository with release `0.0.1-beta1`.
 ## Dependencies (as for now)
 ### NPM
-  * [`electron@1.8.1`](https://github.com/electron/electron) It's necessary to compile the project. Why? because of the compiler... :unamused:.
   * [`shadow-cljs@2.0.34`](https://github.com/thheller/shadow-cljs) The compiler for now, but this will be in a module afterward (compiler agnostic). Root compilation will be a raw `lein` project.
 ### Clojars
-  * [`[camel-snake-kebab "0.4.0"]`](https://github.com/qerub/camel-snake-kebab) It's used to manage `snake-case`d and `camelCase`d keys. I will change to the `camel-case` library included in `electron` package, or not... :wink:
+  * [`[camel-snake-kebab "0.4.0"]`](https://github.com/qerub/camel-snake-kebab) It's used to manage `snake-case`d and `camelCase`d keys.
 ## Installation
 As it's an alpha release, I suppose you already know how to install programs and the configuration of your computer... :yum:
 
@@ -73,11 +72,11 @@ Go in a developpement directory or create it.
 
 create and download the project directory :
 
-`git clone https://github.com/cljstron/cljs-node-electron-boot.git`
+`git clone https://github.com/cljstron/cljstron.git`
 
 You should be in the project directory :
 
-`cd cljs-node-electron-boot`
+`cd cljstron`
 
 And download the needed libraries :
 

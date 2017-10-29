@@ -62,7 +62,7 @@
     :transparent :fullScreenWindowTitle :thickFrame :vibrancy :zoomToPageWidth
     :webPreferences})
 
-(defn ^:export create-window 
+(defn ^:export create-window* 
   [^Keyword key win-conf]   
   "Create `key` window from `win-conf` and store it in main-windows.
   `key` :
@@ -76,6 +76,16 @@
       #(drop-window key)))
   key)
 
+(defn ^:export create-window
+  [^Keyword key &{:as win-conf}]   
+  "Create `key` window from `win-conf` and store it in main-windows.
+  `key` :
+  `win-conf` : key-values for BrowserWindow. 
+  Doc on keys in electron: 
+  https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+  keys can be camelcased or snakecased. ex. alwaysOnTop or always-on-top"
+  (create-window* key win-conf))
+          
 ; TODO include css scripts too
 (defn- include-scripts [urls]
   "Create JavaScript includes from `js-urls`.
@@ -83,7 +93,7 @@
   Nit value for `js-urls` does'nt include any file"
   (loop [url (seq urls) code ""]
     (if url
-      (recur (seq (rest url)) (str code "<script src='" (first url) "'></script>"))
+      (recur (seq (rest url)) (str code "<script src='" (first url) "'></script>\n"))
       code)))
   
 (defn- include-code [code]
@@ -92,7 +102,7 @@
   Nil value for `code` includes nothing."
   (println "code -> " code)
   (if code 
-    (str code) 
+    (str code "\n") 
     ""))
   
 (defn- include-main-call [function]
@@ -100,19 +110,20 @@
   `function` : name of the function to call or nil.
   Nil value for `function` includes nothing."
   (if function
-    (str "<script>" function "();</script>")
+    (str "<script>" function "();</script>\n")
     ""))
 
-(defn ^export open-window [^Keyword key &{:keys [page-url js-urls main-fn win-conf intro-html]
+(defn ^export open-window [^Keyword key &{:keys [page-url js-urls main-fn intro-html]
+                                          :as config
                                           :or {page-url "index.html"}}]
-  "create and load `key` window with `keys` arguments.
-  `page-url` : HTML base page url.
-  `js-urls` : sequence of js scripts to include in page.
-  `main` : main function to call when loaded.
-  `win-conf` : map of parameters to create renderer.
-  `intro-html` : optional html code to inject before loading."
+  "Create and load `key` window with `keys` arguments.
+  `page-url`: HTML base page url.
+  `js-urls`: sequence of js scripts to include in page.
+  `main`: main function to call when loaded.
+  `intro-html`: optional html code to inject before loading.
+  `other keys`: will be sent as configuration of the BrowserWindow to create-window* fn."  
   (-> key
-    (create-window win-conf)
+    (create-window* (dissoc config :page-url :js-urls :main-fn :intro-html))
     (load-window page-url)
     (exec-on-window 
       (include-code intro-html)

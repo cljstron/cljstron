@@ -11,17 +11,16 @@
   (open-window :cljstron.cljstron-simple/main
     :js-urls     ["js/main.js"]
     :main-fn     "cljstron_simple.renderer.main.init"
-    :win-conf    {}
-    :page-url    "plugs/cljstron-simple/resources/index.html"
+    :page-url    "plugs/@cljstron-simple/cljstron-simple/resources/index.html"
     :intro-html  "<h1>Hello World! (dev)</h1>
     We are using node.js <script>document.write(process.version)</script>
     and Electron <script>document.write(process.versions['electron'])</script>.")
   (println "window opened"))
     
-(defn ^:export init []
+(defn ^:export main []
   "`main` entry point."
   (.on app "ready" open-main-window)  
   (.on app "window-all-closed"
     #(.quit app)))
 
-(init)
+(main)
