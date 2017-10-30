@@ -1,6 +1,6 @@
 {
     "name": "@cljstron/cljstron",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "ClojureScript skeleton in node.js with electron",
     "main": "main.js",
     "author": "Ivan Pierre, (2017)kilroySoft",
@@ -19,7 +19,7 @@
         "start": "electron ."
     },
     "dependencies": {
-        "shadow-cljs": "^2.0.45"
+        "shadow-cljs": "2.0.45"
     },
     "devDependencies": {}
 }
