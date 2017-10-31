@@ -11,14 +11,18 @@
                   [camel-snake-kebab "0.4.0"]
                   [cljs-node-io "0.5.0"]
                   [org.clojure/tools.reader "1.1.0"]]
+
   :plugins [[lein-cljsbuild "1.1.7"]
             [lein-figwheel "0.5.10"]
             [lein-cooper "1.2.2"]]
+
   :hooks    [leiningen.cljsbuild]
+
   :clean-targets ^{:protect false} ["main.js"
                                     "generate.js"
                                     "resources/js"
                                     "target"]
+
   :cljsbuild
   {:builds
    [{ :id "main"
@@ -29,6 +33,7 @@
                   :optimizations :none
                   :pretty-print false
                   :cache-analysis true}}
+
     { :id "generate"
       :compiler { :output-to "generate.js"
                   :output-dir "target/generate"
@@ -37,6 +42,7 @@
                   :optimizations :none
                   :pretty-print false
                   :cache-analysis true}}
+
     { :id "renderer"
       :compiler { :output-to "resources/js/main.js"
                   :output-dir "target/renderer"
@@ -45,6 +51,7 @@
                   :optimizations :none
                   :cache-analysis true
                   :main "main.renderer"}}
+
     { :id "main-release"
       :compiler { :output-to "main.js"
                   :output-dir "target/main-release"
@@ -52,6 +59,7 @@
                   :pretty-print true
                   :cache-analysis true
                   :infer-externs true}}
+
     { :id "renderer-release"
       :compiler { :output-to "resources/public/js/ui-core.js"
                   :output-dir "resources/public/js/ui-release-out"
@@ -59,8 +67,9 @@
                   :optimizations :advanced
                   :cache-analysis true
                   :infer-externs true
-                 :main "main.renderer"}}]}
-  :figwheel {:http-server-root "public"
-             :css-dirs ["resources/public/css"]
-             :ring-handler tools.figwheel-middleware/app
-             :server-port 3449})
+                  :main "main.renderer"}}]}
+
+  :figwheel { :http-server-root "public"
+              :css-dirs ["resources/public/css"]
+              :ring-handler tools.figwheel-middleware/app
+              :server-port 3449})

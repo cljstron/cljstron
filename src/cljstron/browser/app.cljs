@@ -1,5 +1,5 @@
 (ns cljstron.browser.app
-  (:require 
+  (:require
     [cljs.nodejs :as node :refer [enable-util-print!]]
     [clojure.tools.reader.edn :refer [read-string]]
     [cljs-node-io.core :as io :refer [slurp spit]]
@@ -25,20 +25,20 @@
   "Write`data` on file `file` in JSON format."
   (spit file (.stringify js/JSON clj->js(data) nil "  ")))
 
-; forward  
+; forward
 (declare change-value)
 
 (defn update-vector [conf value]
   (into [] (map (partial change-value conf) value)))
-  
+
 (defn update-list [conf value]
   (let [changed-value (list* (map (partial change-value conf) value))]
-    (if (= changed-value value)  
+    (if (= changed-value value)
       (error "(generate/change-value) Non string value in list " changed-value)
       (if (every? string? changed-value)
         (apply str changed-value)
         changed-value))))
-  
+
 (declare update-kv)
 
 (defn update-map [conf value]
@@ -47,21 +47,21 @@
 (defn update-keyword [conf value]
   (if-let [new-value (get conf value)]
     new-value
-    (error "The key '" value "' has no definition"))) 
+    (error "The key '" value "' has no definition")))
 
 (defn- change-value [conf value]
   (cond
     (vector? value) (update-vector conf value)
     (list? value) (update-list conf value)
-    (map? value) (update-map conf value) 
+    (map? value) (update-map conf value)
     (keyword? value) (update-keyword conf value)
     :else value))
-    
+
 (defn ^:export update-kv [conf [key value]]
   [key (change-value conf value)])
 
 (defn ^:export read-app-edn [app-key file]
-  (let 
+  (let
     [ app (read-edn file)
       config (merge (:base app) (get app app-key))]
     (loop [conf config]
@@ -78,29 +78,28 @@
     :main "main.js",
     :author "Ivan Pierre, (2017)kilroySoft",
     :license "MIT",
-    :keywords 
+    :keywords
       [ "electron",
         "clojurescript",
         "library"]
-      
+
     :homepage "https://github.com/cljstron/cljstron/blob/master/README.md",
-    :repository 
+    :repository
       { :type "git",
         :url "https://github.com/cljstron/cljstron.git"}
-      
-    :scripts 
-      {ß
-        :start "electron ."}
-      
-    :dependencies 
-    {
-      :shadow-cljs "^2.0.51"}
-    
-    :devDependencies {}})
+
+    :scripts
+      { :start "electron ."}
+
+    :dependencies
+      { :shadow-cljs "^2.0.51"}
+
+    :devDependencies
+      {}})
 
 
 (defn def-shadow-cljs-edn [& app-key]
-  {  
+  {
     :source-paths ["src"]
 
     :dependencies  [[camel-snake-kebab "0.4.0"]
@@ -108,28 +107,27 @@
                     [org.clojure/tools.reader "1.1.0"]]
 
     :builds
-    { :main 
+    { :main
       { :target :node-script
         :output-to "main.js"
         :main main.main/main}
-      
-      :generate 
+
+      :generate
       { :target :node-script
         :output-to "generate.js"
         :main main.generate/main}}})
-      
-      ; :renderer                
+
+      ; :renderer
       ; { :target :browser
       ;   :output-dir "resources/js"
       ;   :asset-path "js"
 
-      ;   :modules 
-      ;   { :renderer {:entries []}}}]}      
-      
+      ;   :modules
+      ;   { :renderer {:entries []}}}]}
+
 
 (defn def-project-clj [& app-key])
 
 (defn def-project-boot [& app-key])
 
 (defn def-cljs-edn [& app-key])
-
