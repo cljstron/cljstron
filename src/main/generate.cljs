@@ -5,9 +5,9 @@
     [cljstron.browser.app :refer [read-json read-app-edn]]))
 
 (enable-util-print!)
-      
+
 (defn main []
   "Generate compile files for the project"
-  (pprint (read-app-edn "app.edn"))
+  (pprint (read-app-edn :main "app.edn"))
   (println "-----------------------------------")
   (pprint (read-json "package.json")))
