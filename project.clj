@@ -3,8 +3,8 @@
             :url "https://opensource.org/licenses/MIT"}
   :source-paths ["src"]
   :description "A hello world application for electron"
-  :dependencies  [;[org.clojure/clojure "1.9.0-beta3"]
-                  [org.clojure/clojurescript "1.9.946"]
+  :dependencies  [;[org.clojure/clojure "1.9.0-beta11"]
+                  [org.clojure/clojurescript "1.9.908"]
                   ;[figwheel "0.5.10"]
                   ;[reagent "0.6.1"]
                   ;[ring/ring-core "1.6.1"]
@@ -61,15 +61,15 @@
                   :infer-externs true}}
 
     { :id "renderer-release"
-      :compiler { :output-to "resources/public/js/ui-core.js"
-                  :output-dir "resources/public/js/ui-release-out"
-                  :source-map "resources/public/js/ui-core.js.map"
+      :compiler { :output-to "resources/js/ui-core.js"
+                  :output-dir "target/ui-release-out"
+                  :source-map "ressource/js/ui-core.js.map"
                   :optimizations :advanced
                   :cache-analysis true
                   :infer-externs true
                   :main "main.renderer"}}]}
 
   :figwheel { :http-server-root "public"
-              :css-dirs ["resources/public/css"]
+              :css-dirs ["resources/css"]
               :ring-handler tools.figwheel-middleware/app
               :server-port 3449})
