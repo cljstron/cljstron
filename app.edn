@@ -19,9 +19,9 @@
 ;;; #{[:www '(1 2 3 "aaaa")]} -> [:www (1 2 3 "aaaa")]
 ;;; #{{:www '(1 2 3)} -> {:www (1 2 3)}
 
-
+{
   ;; default values for whole app
-{  :app
+  :app
   {
     :parent #{:base}
     :user "cljstron"

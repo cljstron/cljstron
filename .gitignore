@@ -9,5 +9,6 @@ package-lock.json
 **/js
 *.js
 plugs/*
-.boot
+/.boot
 .eslintrc.js
+*.cljs.edn

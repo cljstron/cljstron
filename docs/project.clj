@@ -1,106 +1,75 @@
-(def electron-version "1.8.1")
-(def figwheel-version "0.5.14")
+(defproject cljstron "0.0.3"
+  :license {:name "The MIT License"
+            :url "https://opensource.org/licenses/MIT"}
+  :source-paths ["src"]
+  :description "A hello world application for electron"
+  :dependencies  [;[org.clojure/clojure "1.9.0-beta11"]
+                  [org.clojure/clojurescript "1.9.908"]
+                  ;[figwheel "0.5.10"]
+                  ;[reagent "0.6.1"]
+                  ;[ring/ring-core "1.6.1"]
+                  [camel-snake-kebab "0.4.0"]
+                  [cljs-node-io "0.5.0"]
+                  [org.clojure/tools.reader "1.1.0"]]
 
-(defproject {{name}} "1.0.13"
-  :description    "A library to manage and develop electron applications in ClojureScript... and Clojure?"
-  :url            "https://github.com/cljstron/cljs-node-electron-boot"
-  :license        {:name "MIT License"
-                   :url  "http://opensource.org/licenses/MIT"}
+  :plugins [[lein-cljsbuild "1.1.7"]
+            [lein-figwheel "0.5.10"]
+            [lein-cooper "1.2.2"]]
 
-  :dependencies   [[figwheel ~figwheel-version]
-                   [org.clojure/clojure "1.9.0-beta2"]
-                   [org.clojure/clojurescript "1.9.946"]
-                   [reagent "0.8.0-alpha2"]]
+  :hooks    [leiningen.cljsbuild]
 
-  :plugins        [[lein-cljsbuild "1.1.7"]
-                   [lein-externs "0.1.6"]
-                   [lein-figwheel ~figwheel-version]
-                   [lein-npm "0.7.0-rc1"]
-                   [lein-shell "0.5.0"]]
+  :clean-targets ^{:protect false} ["main.js"
+                                    "generate.js"
+                                    "resources/js"
+                                    "target"]
 
-  :npm            {:devDependencies [[electron ~electron-version]
-                                     [electron-packager "^9.1.0"]
-                                     [closurecompiler-externs "^1.0.4"]
-                                     [ws "^3.2.0"]]}
+  :cljsbuild
+  {:builds
+   [{ :id "main"
+      :compiler { :output-to "main.js"
+                  :output-dir "target/main"
+                  :main "main.main/main"
+                  :target :nodejs
+                  :optimizations :none
+                  :pretty-print false
+                  :cache-analysis true}}
 
-  :source-paths   ["src" "src_plugs"]
-  :resource-paths ["resources"]
+    { :id "generate"
+      :compiler { :output-to "generate.js"
+                  :output-dir "target/generate"
+                  :main "main.generate/main"
+                  :target :nodejs
+                  :optimizations :none
+                  :pretty-print false
+                  :cache-analysis true}}
 
-  :clean-targets  ^{:protect false} [:target-path
-                                     "releases"
-                                     [:cljsbuild :builds :main :compiler :output-to]
-                                     [:cljsbuild :builds :main :compiler :output-dir]
-                                     [:cljsbuild :builds :front :compiler :output-to]
-                                     [:cljsbuild :builds :front :compiler :output-dir]
-                                     "resources/main.js"
-                                     "resources/plugs/cljstron_simple/js"
-                                     "resources/plugs/cljstron_simple/main.js"]
-                                     
-  :figwheel       {:nrepl-port       7888
-                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-                   :builds-to-start  [:front]
-                   :css-dirs         ["resources/plugs/cljstron_simple/css"]}
+    { :id "renderer"
+      :compiler { :output-to "resources/js/main.js"
+                  :output-dir "target/renderer"
+                  :source-map true
+                  :asset-path "js/ui-out"
+                  :optimizations :none
+                  :cache-analysis true
+                  :main "main.renderer"}}
 
-  :cljsbuild      {:builds
-                   {:main
-                    {:source-paths ["src" "src_plugs"]
-                     :figwheel     {:on-jsload {{root-ns}}.main.init/on-figwheel-reload!}
-                     :compiler     {:main           {{root-ns}}.main.init
-                                    :output-to      "resources/main.js"
-                                    :output-dir     "resources/js/out_main"
-                                    :asset-path     "app/js/out_main"
-                                    :externs        ["app/js/externs_main.js"]
-                                    :target         :nodejs
-                                    :optimizations  :none}}
-                    :front
-                    {:source-paths ["src" "src_front"]
-                     :figwheel     {:on-jsload {{root-ns}}.init/start-front!}
-                     :compiler     {:main           {{root-ns}}.init
-                                    :output-to      "app/js/front.js"
-                                    :output-dir     "app/js/out_front"
-                                    :asset-path     "js/out_front"
-                                    :externs        ["app/js/externs_front.js"]
-                                    :optimizations  :none}}}}
+    { :id "main-release"
+      :compiler { :output-to "main.js"
+                  :output-dir "target/main-release"
+                  :optimizations :advanced
+                  :pretty-print true
+                  :cache-analysis true
+                  :infer-externs true}}
 
-  :profiles       {:dev  {:source-paths ["env/dev/src"]
-                          :dependencies [[com.cemerick/piggieback "0.2.1"]
-                                         [figwheel-sidecar ~figwheel-version]]
-                          :cljsbuild    {:builds
-                                         {:main  {:source-paths ["env/dev/src" "env/dev/src_main"]}
-                                          :front {:source-paths ["env/dev/src" "env/dev/src_front"]}}}}
+    { :id "renderer-release"
+      :compiler { :output-to "resources/js/ui-core.js"
+                  :output-dir "target/ui-release-out"
+                  :source-map "ressource/js/ui-core.js.map"
+                  :optimizations :advanced
+                  :cache-analysis true
+                  :infer-externs true
+                  :main "main.renderer"}}]}
 
-                   :prod {:source-paths ["env/prod/src"]
-                          :cljsbuild    {:builds
-                                         {:main  {:source-paths ["env/prod/src" "env/prod/src_main"]
-                                                  :compiler     ^:replace
-                                                                {:output-to      "app/js/main.js"
-                                                                 :externs        ["app/js/externs_main.js"]
-                                                                 :optimizations  :advanced
-                                                                 :target         :nodejs
-                                                                 :pretty-print   false}}
-                                          :front {:source-paths ["env/prod/src" "env/prod/src_front"]
-                                                  :compiler     ^:replace
-                                                                {:output-to      "app/js/front.js"
-                                                                 :externs        ["app/js/externs_front.js"]
-                                                                 :optimizations  :advanced
-                                                                 :pretty-print   false}}}}}}
-
-
-  :aliases        {"build-main"  ["do"
-                                  ["externs" "main" "app/js/externs_main.js"]
-                                  ["cljsbuild" "once" "main"]]
-                   "build-front" ["do"
-                                  ["externs" "front" "app/js/externs_front.js"]
-                                  ["cljsbuild" "once" "front"]]
-                   "build"       ["do" "build-main" "build-front"]
-                   "run"         ["do"
-                                  ["shell" "./node_modules/.bin/electron" "app"]]
-                   "package"     ["do"
-                                  "clean"
-                                  ["with-profile" "prod" "build"]
-                                  ["with-profile" "prod" "shell" "./node_modules/.bin/electron-packager"
-                                   "app" :project/name ~(str "--version=" electron-version)
-                                   "--asar"
-                                   "--out=releases"
-                                   "--overwrite"]]})
-  
+  :figwheel { :http-server-root "public"
+              :css-dirs ["resources/css"]
+              :ring-handler tools.figwheel-middleware/app
+              :server-port 3449})

@@ -1,0 +1,102 @@
+;;; General configuration file.
+;;; This is resident with CLJStron library
+;;;
+;;; :base are the base values taken for :main and every :plugs.
+;;; Every given value replaces value in the :base for its key.
+;;;
+;;; Then recursively every values in the key-values pairs are replaced :
+;;; - If it's a key it's replaced by the associated key value until it's a string
+;;; - If it's an list it's replaced by a string which is the concatenation
+;;; of all the strings, given that keys are replaced too by the string
+;;; values associated.
+;;; - If it's a map keyed values are transformed recursively.
+;;; - If it's a set value is not changed
+;;; - If it's a vector values are transformed recursively.
+;;;
+;;; - at the end of the process all set values are transformed in
+;;; their values, There should be only one value in the set so :
+;;; #{:aaa} -> :aaa
+;;; #{[:www '(1 2 3 "aaaa")]} -> [:www (1 2 3 "aaaa")]
+;;; #{{:www '(1 2 3)} -> {:www (1 2 3)}
+
+;; default values for all applications
+{ :-base
+  { :github "https://github.com/"
+    :homepage (:github :user "/" :project "/blob/master/README.md")
+    ; change npm-user to "" if it's a general package
+    :npm-user ("@" :user "/")
+    :npm (:npm-user :project)
+    :npm-deps {}
+    :npm-dev-deps {}
+    :scripts {}
+    :bins {}
+    :apps [:exec]
+    :exec-file (:exec ".js")
+    :exec-ns (:project ".main." :exec)
+    :exec-fn (:main-exec-ns "/" :exec)
+    :renderer (:resources "/js/" :exec ".js")
+    :git-url (:github :user "/" :project ".git")}
+
+  {:-gen-files
+    ;; generate clj makefile
+    :clj
+    {
+      :parent #{:app}
+      :project ; ("project.clj")
+      { :source-paths :src
+        :dependencies :cljs-deps
+        ; We'll loop on application and generate according to every app data
+        :builds ( :loop :loop-main :apps
+                  { :loop-main
+                    { :parent :loop-main
+                      :target :taget,
+                      :output-to :exec-file,
+                      :main :exec-function}})}}
+
+    ;; generate boot makefile
+    :clj
+    {
+      :parent #{:app}
+      :project ; ("project.clj")
+      { :source-paths :src
+        :dependencies :cljs-deps
+        ; We'll loop on application and generate according to every app data
+        :builds ( :loop :loop-main :apps
+                  { :loop-main
+                    { :parent :loop-main
+                      :target :taget,
+                      :output-to :exec-file,
+                      :main :exec-function}})}}
+
+    ;; generate edn makefile
+    :edn
+    {
+      :parent #{:app}
+      :shadow-cljs ; ("shadow-cljs.edn")
+      { :source-paths :src
+        :dependencies :cljs-deps
+        ; We'll loop on application and generate according to every app data
+        :builds ( :loop :loop-main :apps
+                  { :loop-main
+                    { :parent :loop-main
+                      :target :taget,
+                      :output-to :exec-file,
+                      :main :exec-function}})}}
+
+    ;; generate json file
+    :json
+    { :parent #{:main}
+      :package ; ("package.json")
+      {
+        :description :description
+        :repository :repository
+        :license :licence
+        :homepage :homepage,
+        :name :npm
+        :scripts :scripts
+        :keywords :keywords
+        :author :author
+        :version :version
+        :main :main-exec-file
+        :dependencies :npm-deps
+        :devDependencies :npm-dev-deps}}}}
