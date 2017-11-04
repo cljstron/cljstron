@@ -19,7 +19,7 @@
     "start": "electron ."
   },
   "dependencies": {
-    "shadow-cljs": "^2.0.51"
+    "shadow-cljs": "^2.0.55"
   },
   "devDependencies": {}
 }

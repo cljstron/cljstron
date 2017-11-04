@@ -1,4 +1,5 @@
 ;;; Application level configuration file.
+;;; See app.org.edn in CLJStron for file generation.
 ;;;
 ;;; :base are the base values taken for :main and every :plugs.
 ;;; Every given value replaces value in the :base for its key.
@@ -6,42 +7,66 @@
 ;;; Then recursively every values in the key-values pairs are replaced :
 ;;; - If it's a key it's replaced by the associated key value until it's a string
 ;;; - If it's an list it's replaced by a string which is the concatenation
-;;; of all the strings, given that keys are replaced too by the string 
+;;; of all the strings, given that keys are replaced too by the string
 ;;; values associated.
 ;;; - If it's a map keyed values are transformed recursively.
+;;; - If it's a set value is not changed
 ;;; - If it's a vector values are transformed recursively.
 ;;;
-{ :base 
-  { :version "0.0.0"
+;;; - at the end of the process all set values are transformed in
+;;; their values, There should be only one value in the set so :
+;;; #{:aaa} -> :aaa
+;;; #{[:www '(1 2 3 "aaaa")]} -> [:www (1 2 3 "aaaa")]
+;;; #{{:www '(1 2 3)} -> {:www (1 2 3)}
+
+
+  ;; default values for whole app
+{  :app
+  {
+    :parent #{:base}
+    :user "cljstron"
+    :version "0.0.3"
+    :licence "MIT"
+    :target #{:node-script}
     :resources "resources"
-    :exec "main"
-    :github "https://github.com/"
-    :git {:git (:github :user "/" :project ".git")
-          :homepage (:github :user "/" :project "/blob/master/README.md")} 
-    :npm-user ("@" :user "/")
-    :npm (:npm-user :project)
-    :browser-exec-file (:exec ".js")
-    :browser-exec (:project ".browser." :exec "/" :exec)
-    :renderer (:resources "/js/" :exec ".js")
-    :keywords 
+    :author "Ivan Pierre, (2017)kilroySoft",
+    :src ["src"]
+    :apps #{[:main :generate]}
+
+    :repository
+    { :type "git",
+      :url :git-url},
+
+    :cljs-deps
+    [ ["camel-snake-kebab" "0.4.0"]
+      ["com.cognitect/transit-cljs" "0.8.243"]
+      ["cljs-node-io" "0.5.0"]
+      ["org.clojure/tools.reader" "1.0.5"]]
+
+    :keywords
     [ "electron"
       "clojurescript"
       "CLJStron"]}
 
+  ;; values for main app
   :main
-  { :user "cljstron"
-    :project :user
-    :version "0.0.3"
+  { :parent #{:app}
+    :project "cljstron"
+    :exec "main"
+    :scripts {:start "electron ."}
     :npm-deps
-      { :shadow-cljs "^2.0.49"} 
-    :description "A library to manage and develop `electron` applications in `ClojureScript`... and `Clojure`?"    
-    :cljs-deps
-      [ ["camel-snake-kebab" "0.4.0"]
-        ["com.cognitect/transit-cljs" "0.8.243"]
-        ["cljs-node-io" "0.5.0"]
-        ["org.clojure/tools.reader" "1.0.5"]]}
+      { :shadow-cljs "^2.0.49"}
+    :description
+      "A library to manage and develop `electron` applications in `ClojureScript`... and `Clojure`?"}
+
+  ;; values for generate app (will be tranfered in another project)
+  :generate
+  { :parent #{:app}
+    :project "cljstron-generate"
+    :exec "generate"
+    :description "Generate all config files"}
 
   :plugs
-  { :simple 
+  { :simple
     { :project "cljstron-simple"
-      :window :exec}}}     
+      :window :exec}}}

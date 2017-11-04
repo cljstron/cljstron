@@ -9,6 +9,10 @@
 
 (enable-util-print!)
 
+(defn ^:export pprint-str [data]
+  "Read `file` and tranform it from :edn to clojure structure."
+  (with-out-str (pprint data)))
+
 (defn ^:export read-edn [file]
   "Read `file` and tranform it from :edn to clojure structure."
   (read-string (slurp file)))
@@ -99,23 +103,24 @@
 
 
 (defn def-shadow-cljs-edn [& app-key]
+  (println "def-shadow.cljc-edn")
   {
     :source-paths ["src"]
 
-    :dependencies  [[camel-snake-kebab "0.4.0"]
-                    [cljs-node-io "0.5.0"]
-                    [org.clojure/tools.reader "1.1.0"]]
+    :dependencies  [['camel-snake-kebab "0.4.0"]
+                    ['cljs-node-io "0.5.0"]
+                    ['org.clojure/tools.reader "1.1.0"]]
 
     :builds
     { :main
       { :target :node-script
         :output-to "main.js"
-        :main main.main/main}
+        :main 'main.main/main}
 
       :generate
       { :target :node-script
         :output-to "generate.js"
-        :main main.generate/main}}})
+        :main 'main.generate/main}}})
 
       ; :renderer
       ; { :target :browser

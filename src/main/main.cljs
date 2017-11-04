@@ -14,12 +14,12 @@
     :page-url    "plugs/@cljstron-simple/cljstron-simple/resources/index.html"
     :intro-html  "<h1>Hello World! (dev)</h1>
     We are using node.js <script>document.write(process.version)</script>
-    and Electron <script>document.write(process.versions['electron'])</script>.")
+    and Electron <script>document.write(process.versions['electron'])</script>.<br>")
   (println "window opened"))
-    
+
 (defn ^:export main []
   "`main` entry point."
-  (.on app "ready" open-main-window)  
+  (.on app "ready" open-main-window)
   (.on app "window-all-closed"
     #(.quit app)))
 

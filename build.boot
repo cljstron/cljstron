@@ -1,3 +1,5 @@
+#tailrecursion.boot.core/version "2.5.1"
+
 (set-env!
   :source-paths    #{"src"}
   :resource-paths  #{"resources"}
@@ -23,14 +25,14 @@
 ;                :target-path        "target"
 ;                :on-jsload          'app.browser/init)
 
-    (cljs       :ids                #{"browser"}
-                :optimizations      :none)
+;    (cljs       :ids                #{"renderer"}
+;                :optimizations      :none)
 
     (cljs       :ids                #{"main"}
-                :compiler-options    {:closure-defines {'app.main/dev? true}}
+;                :compiler-options    {:closure-defines {'app.main/dev? true}}
                 :optimizations      :none)
 
-    (target :dir #{"resources/jsdev"})))
+    (target)))
 
 
 (deftask prod
@@ -45,4 +47,4 @@
                 :source-map true
                 :optimizations   :advanced)
 
-    (target :dir #{"resources/js"})))
+    (target)))
