@@ -5,3 +5,4 @@
   * Added app.edn and app.org.edn.
   * Testing cljstron/main/app.cljs.
   * Change main to open a base window w/o plug.
+  * Adapt README.md to new version, especially File structure.

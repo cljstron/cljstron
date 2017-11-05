@@ -166,7 +166,7 @@ or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron
 #### Sources
     └── ['src']                         Sources root
         ├── [cljstron]                  Root of cljstron library
-        │   ├── [main]                  Root for helper function for main application
+        │   ├── [browser]               Root for helper function for main application
         │   │   ├── interop.cljs        Translate recursively JS->CLJS structures (unused)
         │   │   ├── app.cljs            App management. Require, launch
         │   │   ├── plug.cljs           Plugs management. Require, launch
