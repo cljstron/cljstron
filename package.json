@@ -10,13 +10,21 @@
   "scripts": {
     "start": "electron ."
   },
+  "bugs": {
+    "url": "https://github.com/cljstron/cljstron/issue",
+    "email": "cljstron@gmail.com"
+  },
   "keywords": [
     "electron",
     "clojurescript",
     "CLJStron"
   ],
-  "author": "Ivan Pierre, (2017)kilroySoft",
+  "directories.doc": [],
+  "author": "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre",
   "devDependencies": {},
+  "bin": {
+    "generate": "./generate.js"
+  },
   "version": "0.0.3",
   "main": "main.js",
   "dependencies": {

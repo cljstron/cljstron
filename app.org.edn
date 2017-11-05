@@ -22,18 +22,22 @@
 ;; default values for all applications
 { :-base
   { :github "https://github.com/"
+    :gmail "@gmail.com"
     :homepage (:github :user "/" :project "/blob/master/README.md")
-    ; change npm-user to "" if it's a general package
+    :bugs-page (:github :user "/" :project "/issue")
+    :bugs-mail (:user :gmail)
+    :bugs {:url :bugs-page :email :bugs-mail}    ; change npm-user to "" if it's a general package
+    :bins {}
     :npm-user ("@" :user "/")
     :npm (:npm-user :project)
     :npm-deps {}
     :npm-dev-deps {}
     :scripts {}
-    :bins {}
+    :directories.doc []
     :apps []
     :exec-file (:exec ".js")
-    :exec-ns (:project ".main." :exec)
-    :exec-fn (:exec-ns "/" :exec)
+    :exec-ns ("main." :exec)
+    :exec-fn (:symbol (:exec-ns "/" :exec))
     :renderer (:resources "/js/" :exec ".js")
     :git-url (:github :user "/" :project ".git")
     :user ""
@@ -86,10 +90,13 @@
             :license :licence
             :homepage :homepage,
             :name :npm
+            :bugs :bugs
             :scripts :scripts
             :keywords :keywords
             :author :author
+            :bin :bins
             :version :version
+            :directories.doc :directories.doc
             :main :exec-file
             :dependencies :npm-deps
             :devDependencies :npm-dev-deps}}}}}

@@ -9,13 +9,13 @@
   "return normalized url from `filename` pointing to a file in the resources directory."
  (str "file://" (join "/" [(js* "__dirname") ".." "resources" filename])))
 
-(def 
+(def
   ^{:doc "Var bound to the map of currently open windows.
   `keys` are unique `Keyword` of the window, `values` are `BrowserWindow` instances"
     :jsdoc ["@type {*}"]}
-  main-windows (atom {})) 
+  main-windows (atom {}))
 
-(defn ^:export drop-window [^Keyword key]
+(defn ^:export drop-windonpm iw [^Keyword key]
   "Drop `key` entry from main-windows"
   (swap! main-windows dissoc key)
   key)
@@ -39,22 +39,22 @@
 (defn- get-web-contents [^Keyword key]
   (if-let [wc (.. (get-window key)
                   -webContents)]
-    wc  
+    wc
     (println "get-web-content: no webContent")))
 
 (defn exec-on-window [^Keyword key & ^String code]
   (when-let [code (seq code)]
-    (.. (get-web-contents key) 
+    (.. (get-web-contents key)
         (executeJavaScript (str  "document.write(`" (apply str code) "`);"))
-        (then 
+        (then
           #(identity %)
           #(println "error in exec-on-window: " key " code : " \" code \" "->" \" % \")))))
 
 (defonce ^private window-keys
   ^{:doc "Var bound to the map of currently open windows.
   `keys` are unique `Keyword` of the window, `values` are `BrowserWindow` instances"}
-  #{:width :height :show :backgroundColor :parent :modal :x :y 
-    :useContentSize :center :minWidth :minHeight :maxWidth :maxHeigth 
+  #{:width :height :show :backgroundColor :parent :modal :x :y
+    :useContentSize :center :minWidth :minHeight :maxWidth :maxHeigth
     :resizable :movable :minimizable :maximizable :closable :focusable
     :alwaysOnTop :fullscreen :fullscreenable :simpleFullscreen :skipTaskbar
     :kiosk :title :icon :frame :acceptFirstMouse :disbleAutoHideCursor
@@ -62,30 +62,30 @@
     :transparent :fullScreenWindowTitle :thickFrame :vibrancy :zoomToPageWidth
     :webPreferences})
 
-(defn ^:export create-window* 
-  [^Keyword key win-conf]   
+(defn ^:export create-window*
+  [^Keyword key win-conf]
   "Create `key` window from `win-conf` and store it in main-windows.
   `key` :
-  `win-conf` : key-values for BrowserWindow. 
-  Doc on keys in electron: 
+  `win-conf` : key-values for BrowserWindow.
+  Doc on keys in electron:
   https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
   keys can be camelcased or snakecased. ex. alwaysOnTop or always-on-top"
   (let [temp-win (BrowserWindow. (clj->js (transform-keys ->camelCaseKeyword win-conf)))]
     (add-window key temp-win)
-    (.on temp-win "close" 
+    (.on temp-win "close"
       #(drop-window key)))
   key)
 
 (defn ^:export create-window
-  [^Keyword key &{:as win-conf}]   
+  [^Keyword key &{:as win-conf}]
   "Create `key` window from `win-conf` and store it in main-windows.
   `key` :
-  `win-conf` : key-values for BrowserWindow. 
-  Doc on keys in electron: 
+  `win-conf` : key-values for BrowserWindow.
+  Doc on keys in electron:
   https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
   keys can be camelcased or snakecased. ex. alwaysOnTop or always-on-top"
   (create-window* key win-conf))
-          
+
 ; TODO include css scripts too
 (defn- include-scripts [urls]
   "Create JavaScript includes from `js-urls`.
@@ -95,16 +95,16 @@
     (if url
       (recur (seq (rest url)) (str code "<script src='" (first url) "'></script>\n"))
       code)))
-  
+
 (defn- include-code [code]
   "Include `code` as JavaScript code.
   `code` : JavaScript code to execute as a String.
   Nil value for `code` includes nothing."
   (println "code -> " code)
-  (if code 
-    (str code "\n") 
+  (if code
+    (str code "\n")
     ""))
-  
+
 (defn- include-main-call [function]
   "Include call to main function `function` if not nil.
   `function` : name of the function to call or nil.
@@ -121,11 +121,11 @@
   `js-urls`: sequence of js scripts to include in page.
   `main`: main function to call when loaded.
   `intro-html`: optional html code to inject before loading.
-  `other keys`: will be sent as configuration of the BrowserWindow to create-window* fn."  
+  `other keys`: will be sent as configuration of the BrowserWindow to create-window* fn."
   (-> key
     (create-window* (dissoc config :page-url :js-urls :main-fn :intro-html))
     (load-window page-url)
-    (exec-on-window 
+    (exec-on-window
       (include-code intro-html)
       (include-scripts js-urls)
       (include-main-call main-fn))))

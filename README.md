@@ -55,6 +55,8 @@ You can find history of changes @ [`CHANGES.md`](CHANGES.md) from 4 nov 2017.
   * [`shadow-cljs@2.0.59`](https://github.com/thheller/shadow-cljs) The compiler for now, but this will be in a module afterward (compiler agnostic). Root compilation will be a raw `lein` project.
 ### Clojars
   * [`[camel-snake-kebab "0.4.0"]`](https://github.com/qerub/camel-snake-kebab) It's used to manage `snake-case`d and `camelCase`d keys.
+  * [`[cljs-node-io "0.5.0"]`]() To have slurp and spit, and other standard I/O functions of Clojure in node ClojureScript.
+  * [`[org.clojure/tools.reader "1.1.0"]`]() To read EDN files.
 ## Installation
 As it's an alpha release, I suppose you already know how to install programs and the configuration of your computer... :yum:
 

@@ -1,5 +1,11 @@
 # CHANGES in CLJStron
 
+### 5 Nov 2017
+  * generate.js create package.json and shadow-cljs.
+  * added and tested function (:loop) and (:symbol)
+  * Added a level to clean all sets at the end
+  * Suppress traces
+  * adding bin for generate.
 ### 4 Nov 2017
   * Added this file.
   * Added app.edn and app.org.edn.
