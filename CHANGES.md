@@ -1,5 +1,6 @@
 # CHANGES in CLJStron
-
+### 8 Nov 2017
+  * Refactoring of app.cljs
 ### 5 Nov 2017
   * generate.js create package.json and shadow-cljs.
   * added and tested function (:loop) and (:symbol)

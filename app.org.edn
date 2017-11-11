@@ -22,27 +22,27 @@
 ;; default values for all applications
 { :-base
   { :github "https://github.com/"
-    :gmail "@gmail.com"
-    :homepage (:github :user "/" :project "/blob/master/README.md")
-    :bugs-page (:github :user "/" :project "/issue")
-    :bugs-mail (:user :gmail)
+    :homepage (:str :github :user "/" :project "/blob/master/README.md")
+    :bugs-page (:str :github :user "/" :project "/issue")
+    :bugs-mail (:str :user "@" :mail-host)
     :bugs {:url :bugs-page :email :bugs-mail}    ; change npm-user to "" if it's a general package
     :bins {}
-    :npm-user ("@" :user "/")
-    :npm (:npm-user :project)
+    :npm-user (:str "@" :user "/")
+    :npm (:str :npm-user :project)
     :npm-deps {}
     :npm-dev-deps {}
     :scripts {}
     :directories.doc []
     :apps []
-    :exec-file (:exec ".js")
-    :exec-ns ("main." :exec)
-    :exec-fn (:symbol (:exec-ns "/" :exec))
-    :renderer (:resources "/js/" :exec ".js")
-    :git-url (:github :user "/" :project ".git")
+    :exec-file (:str :exec ".js")
+    :exec-ns (:str "main." :exec)
+    :exec-fn (:symbol (:str :exec-ns "/" :exec))
+    :renderer (:str :resources "/js/" :exec ".js")
+    :git-url (:str :github :user "/" :project ".git")
     :user ""
     :project ""
     :exec ""
+    :mail-host ""
     :resources ""
     :src ""}
 
@@ -55,7 +55,7 @@
       {
         ;; generate clj makefile
         :clj
-        { :output :edn
+        { :output (:quote :edn)
           :project ; ("project.clj")
           {}}
 
@@ -75,7 +75,7 @@
             :dependencies :cljs-deps
             ; We'll loop on application and generate according to every app data
             :builds ( :loop :apps
-                        { :target :target,
+                        { :target (:quote :node-script),
                           :output-to :exec-file,
                           :main :exec-fn})}}
 

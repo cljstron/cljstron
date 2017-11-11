@@ -1,2 +1,0 @@
-# Home
-## Root of documentation

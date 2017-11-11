@@ -70,7 +70,7 @@ As it's an alpha release, I suppose you already know how to install programs and
   * Not mandatory but useful, a node version selector [`nvm`](https://github.com/creationix/nvm#install-script) so you can play with the lastest `node.js` version.
     * if you do it, change version before proceeding...
   * with `npm` install :
-    * latest version of `npm` : `npm i -g "npm@latest"`
+    * latest version of `npm`  :  `npm i -g "npm@latest"`
     * `shadow-cljs` : `npm i -g "shadow-cljs"`
     * `electron` : `npm i -g "electron@1.8.1"`
 ### Installing project
@@ -88,10 +88,10 @@ And download the needed libraries :
 
 `npm install`
 ### Compiling project
-Compile the `main`and `renderer` applications in development mode:
+Compile the `main`and `generate` applications in development mode:
 
-  * `shadow-cljs compile main`
-  * `shadow-cljs compile renderer`
+  * `shadow-cljs compile main` Main application with a dumb window. `electron .` or `npm start`
+  * `shadow-cljs compile generate` Generate compilation files and package.json. `node generate`
 
 If you've got errors... you're at work... :grin: Go to the [`Editing the project`](#editing-the-project) part. And try to figure out why, by reading the error messages.
 

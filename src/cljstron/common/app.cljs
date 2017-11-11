@@ -17,7 +17,7 @@
 (def ^:export read-edn (memoize read-edn*))
 
 (defn ^:export write-edn [file data]
-  "Read `file` and tranform it from :edn to clojure structure."
+  "Write `data` in file `file` in :edn format."
   (spit file (with-out-str (pprint data))))
 
 (defn ^:export read-json [file]
@@ -25,171 +25,139 @@
   (rjs->clj (.parse js/JSON (slurp file))))
 
 (defn ^:export write-json [file data]
-  "Write`data` on file `file` in JSON format."
+  "Write `data` in file `file` in JSON format."
   (spit file (.stringify js/JSON (clj->js data) nil "  ")))
 
-(def key-functions #{:loop :symbol})
+(def key-functions #{:loop :symbol :str :quote})
 
 ; forward
 (declare ^:private change-value)
 
-(defn- update-vector [conf value]
-  (into [] (map (partial change-value conf) value)))
-
-; forward
-(declare ^:private function-change-value)
-
-(defn- function-update-vector [conf value]
-  (into [] (map (partial function-change-value conf) value)))
-
-; forward
-(declare ^:private final-change-value)
-
-(defn- final-update-vector [conf value]
-  (into [] (map (partial final-change-value conf) value)))
-
-(defn- update-list [conf value]
-  (if (get key-functions (first value))
-    value
-    (let [changed-value (list* (map (partial change-value conf) value))]
-      (if (= changed-value value)
-        (error "(update-list) Non string value in list " changed-value)
-        (if (every? string? changed-value)
-          (apply str changed-value)
-          changed-value)))))
-
-; forward
-(declare read-app-edn2)
+(defn- update-coll [level conf value]
+  (println "update-coll " level value)
+  (into (empty value) (map (partial change-value level conf) value)))
 
 (defn- symbol-key [conf symb & rest]
-  (let [symb (change-value conf symb)]
+  (let [symb      (change-value :final conf
+                    (change-value :base conf symb))]
     (apply symbol (str/split symb #"/"))))
 
+; forward
+(declare ^:private read-app-edn2)
+
 (defn- loop-key [conf [key-list body &rest]]
-  (loop [ keys (first (seq (if (keyword? key-list)
-                              (change-value conf key-list)
-                              (error ":loop keylist should be a key defined in :app"))))
+  (loop [ keys (seq (change-value :final conf
+                      (change-value :base conf key-list)))
           res {}]
-    (if (seq keys)
-      (let  [ key (first (seq keys))
+    (if (seq? keys)
+      (let  [ key (first keys)
               conf (read-app-edn2 key ".")
-              val (change-value conf body)
-              val (function-change-value conf val)]
+              val (change-value :base conf body)]
         (recur (rest keys) (merge res {key val})))
       res)))
 
-(defn- final-update-list [conf value]
+(defn- str-key [conf r]
+  (println "(:str " r ")")
+  (if (every? string? r)
+    (apply str r)
+    (cons :str (change-value :base conf r))))
+
+(defn- update-list [level conf value]
+  (let [[f & r] value]
+    (println "update-list (" f level value ")")
+    (cond
+      (= level :base)
+      (cond
+        (= f :quote)          value
+        (= f :symbol)         value
+        (= f :str)            (str-key conf r)
+        (= f :loop)           (change-value :base conf (loop-key conf r))
+        :else                 (map (partial change-value :base conf) value))
+      (= level :final)
+      (cond
+        (= f :quote)          (first r)
+        (= f :symbol)         (symbol-key conf (first r))
+        :else                 value))))
+
+(defn- update-kv [level conf [key value]]
+  (println "update-kv " level key value)
+  (if (get #{:parent :output} key)
+    [key value]
+    [key (change-value level conf value)]))
+
+(defn- update-map [level conf value]
+  (println "update-map " level value)
+  (into {} (map (partial update-kv level conf) value)))
+
+(defn- update-keyword [level conf value]
+  (if (= level :base)
+    (if-let [new-value (get conf value)]
+      new-value
+      (error "(app/update-keyword) The key '" value "' has no definition in " (pprint conf)))
+    value))
+
+(defn- change-value-1 [level conf value]
+  (println "change-value " level value)
   (cond
-    (= (first value) :loop) (loop-key conf (rest value))
-    (= (first value) :symbol) (symbol-key conf (first (rest value)))
-    :else (error "(final-update-list) Non function in final list " value)))
-
-; forward
-(declare ^:private update-kv)
-
-(defn- update-map [conf value]
-  (into {} (map (partial update-kv conf) value)))
-
-; forward
-(declare ^:private function-update-kv)
-
-(defn- function-update-map [conf value]
-  (into {} (map (partial function-update-kv conf) value)))
-
-; forward
-(declare ^:private final-update-kv)
-
-(defn- final-update-map [conf value]
-  (into {} (map (partial final-update-kv conf) value)))
-
-(defn- update-keyword [conf value]
-  (cond
-    (get key-functions value) value
-    :else
-      (if-let [new-value (get conf value)]
-        new-value
-        (error "The key '" value "' has no definition"))))
-
-(defn- change-value [conf value]
-  (cond
-    (vector? value)   (update-vector conf value)
-    (list? value)     (update-list conf value)
-    (map? value)      (update-map conf value)
-    (keyword? value)  (update-keyword conf value)
+    (vector? value)   (update-coll level conf value)
+    (map? value)      (update-map level conf value)
+    (set? value)      (update-coll level conf value)
+    (list? value)     (update-list level conf value)
+    (seq? value)      (update-list level conf value)
+    (keyword? value)  (update-keyword level conf value)
     :else             value))
 
-(defn- function-change-value [conf value]
-  (cond
-    (vector? value)   (function-update-vector conf value)
-    (list? value)     (final-update-list conf value)
-    ; (set? value)      (first value)
-    (map? value)      (function-update-map conf value)
-    :else             value))
-
-(defn- final-change-value [conf value]
-  (cond
-    (vector? value)   (final-update-vector conf value)
-    (set? value)      (first value)
-    (map? value)      (final-update-map conf value)
-    :else             value))
-
-(defn- update-kv [conf [key value]]
-  (if (or (= key :parent) (= key :output))
-    [key value]
-    [key (change-value conf value)]))
-
-(defn- function-update-kv [conf [key value]]
-  (if (or (= key :parent) (= key :output))
-    [key value]
-    [key (function-change-value conf value)]))
-
-(defn- final-update-kv [conf [key value]]
-  (if (or (= key :parent) (= key :output))
-    [key value]
-    [key (final-change-value conf value)]))
+(defn- change-value [level conf value]
+  (let [new-value (change-value-1 level conf value)]
+    (if (= new-value value)
+      value
+      (recur level conf new-value))))
 
 (defn- load-def* [path]
-  (merge  (read-edn (str path "/app.org.edn"))
-          (read-edn (str path "/app.edn"))))
+  (merge
+    (read-edn (str path "/app.org.edn"))
+    (read-edn (str path "/app.edn"))))
 
 (def ^:export load-def (memoize load-def*))
 
 (defn- merge-parents
   [app key]
-  (let [val (get app key)
-        parent (get val :parent)]
-    (if parent
-      (merge (merge-parents app parent) val)
-      val)))
+  (if key
+    (let [val (get app key)
+          parent (get val :parent)]
+      (println "parent=====> " parent)
+      (if parent
+        (merge (merge-parents app parent) val)
+        val))
+    {}))
 
 (defn- read-app-edn2* [key path]
   (let [config (merge-parents (load-def path) key)]
     (loop [conf config]
-      (let [new-conf (into {} (map (partial update-kv conf) conf))]
+      (let [new-conf (into {} (map (partial update-kv :base conf) conf))]
         (if (= new-conf conf)
-          ; finish : suppress sets, execute functions on data
-          (into {} (map (partial function-update-kv conf) conf))
+          (into {} (map (partial update-kv :final conf) conf))
           (recur new-conf))))))
-
-(defn ^:export read-app-edn [key path]
-  (let [conf (read-app-edn2 key path)]
-    (into {} (map (partial final-update-kv conf) conf))))
 
 (def ^:private read-app-edn2 (memoize read-app-edn2*))
 
+(defn read-app-edn [key path]
+  (let [conf (read-app-edn2 key path)]
+    (into {} (map (partial update-kv :final conf) conf))))
+
 (defn ^:export write-gen-files [path]
-  (loop [ ext (seq (:code (read-app-edn :-gen-files ".")))]
-    (when ext
-      (let [[ext-name ext-content] (first ext)
+  (loop [ extensions (seq (:code (read-app-edn :-gen-files ".")))]
+    (when extensions
+      (let [[ext-name ext-content] (first extensions)
             output (:output ext-content)]
-        (loop [ file (seq (dissoc ext-content :output))]
-          (when file
-            (let [[filename content] (first file)
+        (loop [ files (seq (dissoc ext-content :output))]
+          (when files
+            (let [[filename content] (first files)
                   filename (str (name filename) "." (name ext-name))]
               (println "generate " filename)
               (cond
-                (= output :edn)(write-edn filename content)
-                (= output :json)(write-json filename content)
-                :else (error "(write-gen-files) File type unknown" output))
-              (recur (seq (rest file))))))
-        (recur (seq (rest ext)))))))
+                (= output :edn)     (write-edn filename content)
+                (= output :json)    (write-json filename content)
+                :else (error "(app/write-gen-files) File type unknown : " output))
+              (recur (seq (rest files))))))
+        (recur (seq (rest extensions)))))))
