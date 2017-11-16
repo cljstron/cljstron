@@ -25,4 +25,3 @@ npm-debug.log
 .npmrc
 config.gypi
 *.orig
-package-lock.json

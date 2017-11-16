@@ -1,61 +1,25 @@
 {
-  "description": "A library to manage and develop `electron` applications in `ClojureScript`... and `Clojure`?",
-  "repository": {
-    "type": "git",
-    "url": [
-      "str",
-      "github",
-      "user",
-      "/",
-      "project",
-      ".git"
-    ]
-  },
-  "license": "MIT",
-  "homepage": [
-    "str",
-    "github",
-    "user",
-    "/",
-    "project",
-    "/blob/master/README.md"
-  ],
-  "name": [
-    "str",
-    "npm-user",
-    "project"
-  ],
-  "scripts": {
-    "start": "electron ."
-  },
-  "bugs": {
-    "url": [
-      "str",
-      "github",
-      "user",
-      "/",
-      "project",
-      "/issue"
+    "description": "A library to manage and develop `electron` applications in `ClojureScript`... and `Clojure`?",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cljstron/cljstron.git"
+    },
+    "license": "MIT",
+    "homepage": "https://github.com/cljstron/cljstron/blob/master/README.md",
+    "name": "@cljstron/cljstron",
+    "scripts": {
+        "start": "electron ."
+    },
+    "keywords": [
+        "electron",
+        "clojurescript",
+        "CLJStron"
     ],
-    "email": [
-      "user",
-      "gmail"
-    ]
-  },
-  "keywords": null,
-  "directories.doc": null,
-  "author": "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre",
-  "devDependencies": {},
-  "bin": {
-    "generate": "./generate.js"
-  },
-  "version": "0.0.5",
-  "main": [
-    "str",
-    "exec",
-    ".js"
-  ],
-  "dependencies": {
-    "shadow-cljs": "^2.0.59"
-  }
+    "author": "Ivan Pierre, (2017)kilroySoft",
+    "devDependencies": {},
+    "version": "0.0.3",
+    "main": "main.js",
+    "dependencies": {
+        "shadow-cljs": "^2.0.59"
+    }
 }

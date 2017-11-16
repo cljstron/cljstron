@@ -62,7 +62,7 @@
   ;; values for generate app (will be tranfered in another project)
   :generate
   { :parent :app
-    :project "cljstron-generate"
+    :project "cljstron"
     :exec "generate"
     :description "Generate all config files"}
 
