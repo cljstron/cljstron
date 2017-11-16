@@ -52,7 +52,7 @@ It is only as for now a simple experimental `electron` app used as a sandbox.
 You can find history of changes @ [`CHANGES.md`](CHANGES.md) from 4 nov 2017.
 ## Dependencies (as for now)
 ### NPM
-  * [`shadow-cljs@2.0.59`](https://github.com/thheller/shadow-cljs) The compiler for now, but this will be in a module afterward (compiler agnostic). Root compilation will be a raw `lein` project.
+  * [`shadow-cljs@2.0.84`](https://github.com/thheller/shadow-cljs) The compiler for now, but this will be in a module afterward (compiler agnostic). Root compilation will be a raw `lein` project.
 ### Clojars
   * [`[camel-snake-kebab "0.4.0"]`](https://github.com/qerub/camel-snake-kebab) It's used to manage `snake-case`d and `camelCase`d keys.
   * [`[cljs-node-io "0.5.0"]`]() To have slurp and spit, and other standard I/O functions of Clojure in node ClojureScript.
@@ -157,23 +157,23 @@ or even with no support. I use [`Visual Sudio Code`](https://github.com/cljstron
 #### Resources For Library
     ├── ['resources']                   Public HTML root directory for the renderer
     │   ├── [css]                       CSS directory for application
-    │   │   └== [js]                    Compiled AOT, cache an executables for renderer
-    │   │        ├++ [cljs-runtime]     Library and runtime for renderer
-    │   │        ├++ manifest.json      Manifest of libraries and runtime
-    │   │        └== lib.js             The compiled library for the renderer
+    │   ├== [js]                        Compiled AOT, cache an executables for renderer
+    │   │   ├++ [cljs-runtime]          Library and runtime for renderer
+    │   │   ├++ manifest.json           Manifest of libraries and runtime
+    │   │   └== lib.js                  The compiled library for the renderer
     │   ├── index.html                  Empty page to create content from javascript
-    │   ├== lib.js                      The compiled library for main
 #### Resources For Dev And Debug
     │   └== main.js                     The compiled main program of the application
 #### Sources
     └── ['src']                         Sources root
         ├── [cljstron]                  Root of cljstron library
         │   ├── [browser]               Root for helper function for main application
-        │   │   ├── interop.cljs        Translate recursively JS->CLJS structures (unused)
+        │   │   └── window.cljs         Windows management, containers of renderers
+        │   ├── [common]                Root for helper function for both applications
+        │   │   ├── cljjs.cljs          Translate recursively JS->CLJS structures
         │   │   ├── app.cljs            App management. Require, launch
         │   │   ├── plug.cljs           Plugs management. Require, launch
-        │   │   └── browser-window.cljs Windows management, containers of renderers
-        │   ├── [common]                Root for helper function for both applications
+        │   │   └── util.cljs           Some utility functions
         │   └── [renderer]              Root for helper function for renderer application
 #### Sources For Dev And Debug
         └oo [main]                      Optional main entry point. Activate plugs
