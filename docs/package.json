@@ -1,0 +1,25 @@
+{
+    "description": "A library to manage and develop `electron` applications in `ClojureScript`... and `Clojure`?",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cljstron/cljstron.git"
+    },
+    "license": "MIT",
+    "homepage": "https://github.com/cljstron/cljstron/blob/master/README.md",
+    "name": "@cljstron/cljstron",
+    "scripts": {
+        "start": "electron ."
+    },
+    "keywords": [
+        "electron",
+        "clojurescript",
+        "CLJStron"
+    ],
+    "author": "Ivan Pierre, (2017)kilroySoft",
+    "devDependencies": {},
+    "version": "0.0.3",
+    "main": "main.js",
+    "dependencies": {
+        "shadow-cljs": "^2.0.84"
+    }
+}

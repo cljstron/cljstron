@@ -55,7 +55,7 @@
       {
         ;; generate clj makefile
         :clj
-        { :output (:quote :edn)
+        { :output :edn
           :project ; ("project.clj")
           {}}
 

@@ -52,7 +52,7 @@
   { :parent :app
     :project "cljstron"
     :exec "main"
-    :bugs-mail (:user :mail-host)
+    :bugs-mail (:str :user "@" :mail-host)
     :scripts {:start "electron ."}
     :npm-deps
       { :shadow-cljs "^2.0.59"}
