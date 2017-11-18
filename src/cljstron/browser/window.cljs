@@ -15,7 +15,7 @@
     :jsdoc ["@type {*}"]}
   main-windows (atom {}))
 
-(defn ^:export drop-windonpm iw [^Keyword key]
+(defn ^:export drop-window [^Keyword key]
   "Drop `key` entry from main-windows"
   (swap! main-windows dissoc key)
   key)
