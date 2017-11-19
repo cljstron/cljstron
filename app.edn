@@ -26,7 +26,7 @@
     :parent :-base
     :user "cljstron"
     :mail-host "gmail.com"
-    :version "0.0.5"
+    :version "0.0.3"
     :licence "MIT"
     :resources "resources"
     :author "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre"

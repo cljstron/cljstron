@@ -21,15 +21,14 @@
     ],
     "directories.doc": [],
     "author": "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre",
-    "devDependencies": {
-        "electron": "^1.8.1"
-    },
+    "devDependencies": {},
     "bin": {
         "generate": "./generate.js"
     },
     "version": "0.0.3",
     "main": "main.js",
     "dependencies": {
-        "shadow-cljs": "^2.0.87"
+        "electron": "^1.8.1",
+        "shadow-cljs": "^2.0.93"
     }
 }

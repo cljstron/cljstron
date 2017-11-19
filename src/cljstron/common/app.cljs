@@ -34,7 +34,6 @@
 (declare ^:private change-value)
 
 (defn- update-coll [level conf value]
-;  (println "update-coll " level value)
   (into (empty value) (map (partial change-value level conf) value)))
 
 (defn- symbol-key [conf symb & rest]
@@ -46,11 +45,9 @@
 (declare ^:private read-app-edn2)
 
 (defn- loop-key [conf [key-list body &rest]]
-  (println "conf " conf "\nkeylist " key-list "\nbody " body "\nrest " rest)
   (loop [ keys (seq (change-value :final conf
                       (change-value :base conf key-list)))
           res {}]
-    (println "keys : " keys)
     (if (seq? keys)
       (let  [ key (first keys)
               conf (read-app-edn2 key ".")
@@ -59,14 +56,12 @@
       res)))
 
 (defn- str-key [conf r]
-;  (println "(:str " r ")")
   (if (every? string? r)
     (apply str r)
     (cons :str (change-value :base conf r))))
 
 (defn- update-list [level conf value]
   (let [[f & r] value]
-;    (println "update-list (" f level value ")")
     (cond
       (= level :base)
       (cond
@@ -82,13 +77,11 @@
         :else                 value))))
 
 (defn- update-kv [level conf [key value]]
-;  (println "update-kv " level key value)
   (if (get #{:parent :output} key)
     [key value]
     [key (change-value level conf value)]))
 
 (defn- update-map [level conf value]
-;  (println "update-map " level value)
   (into {} (map (partial update-kv level conf) value)))
 
 (defn- update-keyword [level conf value]
@@ -99,7 +92,6 @@
     value))
 
 (defn- change-value-1 [level conf value]
-;  (println "change-value " level value)
   (cond
     (vector? value)   (update-coll level conf value)
     (map? value)      (update-map level conf value)
@@ -126,7 +118,6 @@
   (if key
     (let [val (get app key)
           parent (get val :parent)]
-      (println "key app =====> " key app)
       (if parent
         (merge (merge-parents app parent) val)
         val))
@@ -135,7 +126,6 @@
 (defn- read-app-edn2* [key path]
   (let [content (merge-parents (load-def path) key)]
     (loop [cont content]
-      (println "----key-content->" key cont)
       (let [new-cont (into {} (map (partial update-kv :base cont) cont))]
         (if (= new-cont cont)
           (into {} (map (partial update-kv :final cont) cont))
@@ -149,7 +139,6 @@
 
 (defn ^:export write-gen-files [path]
   (let [ conf (read-app-edn :-gen-files ".")]
-    (pprint conf)
     (loop [ extensions (seq (:code conf))]
       (when extensions
         (let [[ext-name ext-content] (first extensions)
