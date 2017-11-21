@@ -10,8 +10,9 @@
  (str "file://" (join "/" [(js* "__dirname") ".." "resources" filename])))
 
 (def
-  ^{:doc "Var bound to the map of currently open windows.
-  `keys` are unique `Keyword` of the window, `values` are `BrowserWindow` instances"
+  ^{:doc
+    "Var bound to the map of currently open windows.
+    `keys` are unique `Keyword` of the window, `values` are `BrowserWindow` instances"
     :jsdoc ["@type {*}"]}
   main-windows (atom {}))
 
