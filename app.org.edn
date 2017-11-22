@@ -22,23 +22,23 @@
 ;; default values for all applications
 { :-base
   { :github "https://github.com/"
-    :homepage (:str :github :user "/" :project "/blob/master/README.md")
-    :bugs-page (:str :github :user "/" :project "/issue")
-    :bugs-mail (:str :user "@" :mail-host)
+    :homepage (str :github :user "/" :project "/blob/master/README.md")
+    :bugs-page (str :github :user "/" :project "/issue")
+    :bugs-mail (str :user "@" :mail-host)
     :bugs {:url :bugs-page :email :bugs-mail}    ; change npm-user to "" if it's a general package
     :bins {}
-    :npm-user (:str "@" :user "/")
-    :npm (:str :npm-user :project)
+    :npm-user (str "@" :user "/")
+    :npm (str :npm-user :project)
     :npm-deps {}
     :npm-dev-deps {}
     :scripts {}
     :directories.doc []
     :apps []
-    :exec-file (:str :exec ".js")
-    :exec-ns (:str "main." :exec)
-    :exec-fn (:symbol (:str :exec-ns "/" :exec))
-    :renderer (:str :resources "/js/" :exec ".js")
-    :git-url (:str :github :user "/" :project ".git")
+    :exec-file (str :exec ".js")
+    :exec-ns (str "main." :exec)
+    :exec-fn (symbol (str :exec-ns "/" :exec))
+    :renderer (str :resources "/js/" :exec ".js")
+    :git-url (str :github :user "/" :project ".git")
     :user ""
     :project ""
     :exec ""
@@ -88,8 +88,8 @@
                   :compiler { :output-to "main.js"
                               :main main.main/main
                               :source-paths ["src"]
-                              :target (:quote :nodejs)
-                              :optimizations (:quote :none)
+                              :target (quote :nodejs)
+                              :optimizations (quote :none)
                               :pretty-print false
                               :cache-analysis true}}
 
@@ -97,8 +97,8 @@
                   :compiler { :output-to "generate.js"
                               :main main.generate/generate
                               :source-paths ["src"]
-                              :target (:quote :nodejs)
-                              :optimizations (:quote :none)
+                              :target (quote :nodejs)
+                              :optimizations (quote :none)
                               :pretty-print false
                               :cache-analysis true}}]
 
@@ -122,9 +122,9 @@
           :shadow-cljs ; ("shadow-cljs.edn")
           { :source-paths :src
             :dependencies :cljs-deps
-            ; We'll loop on application and generate according to every app data
-            :builds ( :loop :apps
-                        { :target (:quote :node-script),
+            ; We'll loop only on main for now, but it should work
+            :builds ( loop :apps
+                        { :target (quote :node-script),
                           :output-to :exec-file,
                           :main :exec-fn})}}
 

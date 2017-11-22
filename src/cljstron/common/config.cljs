@@ -1,4 +1,4 @@
-(ns cljstron.common.app
+(ns cljstron.common.config
   (:require
     [cljs.nodejs :as node :refer [enable-util-print!]]
     [clojure.tools.reader.edn :refer [read-string]]
@@ -28,7 +28,7 @@
   "Write `data` in file `file` in JSON format."
   (spit file (.stringify js/JSON (clj->js data) nil "  ")))
 
-(def key-functions #{:loop :symbol :str :quote})
+(def key-functions #{'loop 'symbol 'str 'quote})
 
 ; forward
 (declare ^:private change-value)
@@ -58,22 +58,22 @@
 (defn- str-key [conf r]
   (if (every? string? r)
     (apply str r)
-    (cons :str (change-value :base conf r))))
+    (cons 'str (change-value :base conf r))))
 
 (defn- update-list [level conf value]
   (let [[f & r] value]
     (cond
       (= level :base)
       (cond
-        (= f :quote)          value
-        (= f :symbol)         value
-        (= f :str)            (str-key conf r)
-        (= f :loop)           (change-value :base conf (loop-key conf r))
+        (= f 'quote)          value
+        (= f 'symbol)         value
+        (= f 'str)            (str-key conf r)
+        (= f 'loop)           (change-value :base conf (loop-key conf r))
         :else                 (map (partial change-value :base conf) value))
       (= level :final)
       (cond
-        (= f :quote)          (first r)
-        (= f :symbol)         (symbol-key conf (first r))
+        (= f 'quote)          (first r)
+        (= f 'symbol)         (symbol-key conf (first r))
         :else                 value))))
 
 (defn- update-kv [level conf [key value]]

@@ -1,8 +1,11 @@
 # CHANGES in CLJStron
 
 ### 21 Nov 2017
-  * [ ] Start opening `electron` from node code as a thread.
   * [ ] Start managing leiningen's `project.clj`.
+  * [X] manage non-electron end of process.
+  * [X] Supress `plug.cljs`.
+  * [X] Aborted, bad idea: Start opening `electron` from node code as a thread.
+  * [X] `app.cljs` -> `config.cljs`
   * [X] Added `TODO.md`.
   * [X] Added commands `run`, `help`, `generate`. No command -> `run`.
   * [X] `main.cljs` manages arguments: {command {args*}}.

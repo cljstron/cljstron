@@ -25,8 +25,8 @@
      {:output-to "main.js",
       :main main.main/main,
       :source-paths ["src"],
-      :target (:quote :nodejs),
-      :optimizations (:quote :none),
+      :target ':nodejs,
+      :optimizations ':none,
       :pretty-print false,
       :cache-analysis true}}
     {:id "generate",
@@ -34,8 +34,8 @@
      {:output-to "generate.js",
       :main main.generate/generate,
       :source-paths ["src"],
-      :target (:quote :nodejs),
-      :optimizations (:quote :none),
+      :target ':nodejs,
+      :optimizations ':none,
       :pretty-print false,
       :cache-analysis true}}],
    :figwheel
