@@ -5,7 +5,7 @@
     [cljs-node-io.core :as io :refer [slurp spit]]
     [cljs.pprint :refer [pprint]]
     [clojure.string :as str]
-    [cljstron.common.utils :refer [error]]
+    [cljstron.common.utils :refer [error spy]]
     [cljstron.common.cljjs :refer [rjs->clj]]))
 
 (enable-util-print!)
@@ -28,15 +28,13 @@
   "Write `data` in file `file` in JSON format."
   (spit file (.stringify js/JSON (clj->js data) nil "  ")))
 
-(def key-functions #{'loop 'symbol 'str 'quote})
-
 ; forward
 (declare ^:private change-value)
 
 (defn- update-coll [level conf value]
   (into (empty value) (map (partial change-value level conf) value)))
 
-(defn- symbol-key [conf symb & rest]
+(defn- symbol-fn [conf symb & rest]
   (let [symb      (change-value :final conf
                     (change-value :base conf symb))]
     (apply symbol (str/split symb #"/"))))
@@ -44,7 +42,7 @@
 ; forward
 (declare ^:private read-app-edn2)
 
-(defn- loop-key [conf [key-list body &rest]]
+(defn- loop-fn [conf [key-list body &rest]]
   (loop [ keys (seq (change-value :final conf
                       (change-value :base conf key-list)))
           res {}]
@@ -55,26 +53,27 @@
         (recur (seq (rest keys)) (merge res {key val})))
       res)))
 
-(defn- str-key [conf r]
+(defn- str-fn [conf r]
   (if (every? string? r)
     (apply str r)
     (cons 'str (change-value :base conf r))))
 
 (defn- update-list [level conf value]
   (let [[f & r] value]
+    (println "function in a list : " level f)
     (cond
       (= level :base)
       (cond
-        (= f 'quote)          value
-        (= f 'symbol)         value
-        (= f 'str)            (str-key conf r)
-        (= f 'loop)           (change-value :base conf (loop-key conf r))
+        (= f 'quote)          (spy "(quote value) base = " value)
+        (= f 'symbol)         (cons f (map (partial change-value :base conf) r))
+        (= f 'str)            (str-fn conf r)
+        (= f 'loop)           (change-value :base conf (loop-fn conf r))
         :else                 (map (partial change-value :base conf) value))
       (= level :final)
       (cond
-        (= f 'quote)          (first r)
-        (= f 'symbol)         (symbol-key conf (first r))
-        :else                 value))))
+        (= f 'quote)          (spy "(quote value) final = " (first r))
+        (= f 'symbol)         (symbol-fn conf (first r))
+        :else                 (map (partial change-value :final conf) value)))))
 
 (defn- update-kv [level conf [key value]]
   (if (get #{:parent :output} key)
@@ -124,33 +123,33 @@
     {}))
 
 (defn- read-app-edn2* [key path]
-  (let [content (merge-parents (load-def path) key)]
-    (loop [cont content]
-      (let [new-cont (into {} (map (partial update-kv :base cont) cont))]
-        (if (= new-cont cont)
-          (into {} (map (partial update-kv :final cont) cont))
-          (recur new-cont))))))
+  (loop [cont (merge-parents (load-def path) key)]
+    (let [new-cont (change-value :base cont cont)]
+      (if (= new-cont cont)
+        cont
+        (recur new-cont)))))
 
 (def ^:private read-app-edn2 (memoize read-app-edn2*))
 
 (defn read-app-edn [key path]
-  (let [content (read-app-edn2 key path)]
-    (into {} (map (partial update-kv :final content) content))))
+  (change-value :final {} (read-app-edn2 key path)))
+
+(defn- write-files [files ext output]
+  (when files
+    (let [[filename content] (first files)
+          filename (str (name filename) "." (name ext))]
+      (println "generate " filename)
+      (cond
+        (= output :edn)     (write-edn filename content)
+        (= output :json)    (write-json filename content)
+        :else (error "(app/write-gen-files) File type unknown : " output))
+      (recur (seq (rest files)) ext output))))
+
 
 (defn ^:export write-gen-files [path]
-  (let [ conf (read-app-edn :-gen-files ".")]
-    (loop [ extensions (seq (:code conf))]
-      (when extensions
-        (let [[ext-name ext-content] (first extensions)
-              output (:output ext-content)]
-          (loop [ files (seq (dissoc ext-content :output))]
-            (when files
-              (let [[filename content] (first files)
-                    filename (str (name filename) "." (name ext-name))]
-                (println "generate " filename)
-                (cond
-                  (= output :edn)     (write-edn filename content)
-                  (= output :json)    (write-json filename content)
-                  :else (error "(app/write-gen-files) File type unknown : " output))
-                (recur (seq (rest files))))))
-          (recur (seq (rest extensions))))))))
+  (loop [ extensions (seq (:code (read-app-edn :-gen-files ".")))]
+    (when extensions
+      (let [[ext-name ext-content] (first extensions)
+            output (:output ext-content)]
+        (write-files (seq (dissoc ext-content :output)) ext-name output)
+        (recur (seq (rest extensions)))))))

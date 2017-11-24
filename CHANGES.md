@@ -1,5 +1,6 @@
 # CHANGES in CLJStron
-
+### 22 Nov 2017
+  * [X] Released 0.0.5-alpha
 ### 21 Nov 2017
   * [ ] Start managing leiningen's `project.clj`.
   * [X] manage non-electron end of process.
