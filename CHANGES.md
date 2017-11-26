@@ -1,8 +1,10 @@
 # CHANGES in CLJStron
+### 24 Nov 2017
+  * [X] Manage Lein's `project.clj`, phase one.
 ### 22 Nov 2017
   * [X] Released 0.0.5-alpha
 ### 21 Nov 2017
-  * [ ] Start managing leiningen's `project.clj`.
+  * [X] Start managing leiningen's `project.clj`.
   * [X] manage non-electron end of process.
   * [X] Supress `plug.cljs`.
   * [X] Aborted, bad idea: Start opening `electron` from node code as a thread.

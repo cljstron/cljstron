@@ -20,6 +20,7 @@
  :hooks
  [leiningen.cljsbuild]
  :clean-targets
+ (inline "^{:protect false}")
  ["main.js" "generate.js" "resources/js" "target"]
  :cljsbuild
  {:builds

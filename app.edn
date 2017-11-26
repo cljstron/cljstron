@@ -1,46 +1,60 @@
 ;;; Application level configuration file.
 ;;; See app.org.edn in CLJStron for file generation.
 ;;;
-;;; :base are the base values taken for :main and every :plugs.
-;;; Every given value replaces value in the :base for its key.
+;;; Values of parent is recursively read first.
+;;; Every given value replaces value of the parent for its key.
 ;;;
 ;;; Then recursively every values in the key-values pairs are replaced :
-;;; - If it's a key it's replaced by the associated key value until it's a string
-;;; - If it's an list it's replaced by a string which is the concatenation
-;;; of all the strings, given that keys are replaced too by the string
-;;; values associated.
+;;; - If it's a keyword it's replaced by the associated key value until it's a non key
 ;;; - If it's a map keyed values are transformed recursively.
-;;; - If it's a set value is not changed
+;;; - If it's a set values are transformed recursively.
 ;;; - If it's a vector values are transformed recursively.
-;;;
-;;; - at the end of the process all set values are transformed in
-;;; their values, There should be only one value in the set so :
-;;; #{:aaa} -> :aaa
-;;; #{[:www '(1 2 3 "aaaa")]} -> [:www (1 2 3 "aaaa")]
-;;; #{{:www '(1 2 3)} -> {:www (1 2 3)}
-
+;;; - If it's a list values are transformed recursively.
+;;;   - If the first value of the list is a known function it is executed
+;;;     There is different levels of execution :base, :final and :write.
+;;;     - :base functions are executed recursively.
+;;;       - (str ...) When all values are transformed in strings, concatene these.
+;;;       - (loop apps code) Code is generated for all values of the listed apps definitions.
+;;;       - (symbol ...) Arg is recursively transformed until String witch is transformed in symbol.
+;;;       - (quote ...) Keep value unmodified. (i.e. keeping keywords uninterpreted).
+;;;     - :final. Executed at the end.
+;;;       - (quote ...) Suppress the (quote) letting only argument.
+;;;     - :write. Last transform based only on text file.
+;;;       - (inline ...) get the string and put it litterally in place w/o double quotes. i.e.for meta-data
 {
   ;; default values for whole app
   :app
   {
     :parent :-base
-    :user "cljstron"
-    :mail-host "gmail.com"
-    :version "0.0.5"
-    :licence "MIT"
-    :resources "resources"
-    :author "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre"
-    :src ["src"]
-    :apps (quote [:main])
-    :bins {:generate "./generate.js"}
-    :repository
-    { :type "git",
-      :url :git-url},
+    :user       "cljstron"
+    :mail-host  "gmail.com"
+    :version    "0.0.5"
+    :licence    "MIT"
+    :resources  "resources"
+    :author     "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre"
+    :src        ["src"]
+    :apps       (quote [:main])
+    :bins       {:generate "./generate.js"}
+    :repository { :type "git"
+                  :url :git-url}
 
     :cljs-deps
-    [ [camel-snake-kebab "0.4.0"]
-      [cljs-node-io "0.5.0"]
-      [org.clojure/tools.reader "1.1.0"]]
+    [ [camel-snake-kebab          "0.4.0"]
+      [cljs-node-io               "0.5.0"]
+      [org.clojure/tools.reader   "1.1.0"]]
+      ;[reagent                   "0.6.1"]
+      ;[ring/ring-core            "1.6.1"]
+
+    :lein-deps
+    [ [org.clojure/clojurescript  "1.9.946"]
+      [figwheel                   "0.5.14"]
+      [im.chit/hara.reflect       "2.5.10"]
+      [org.clojure/clojure        "1.9.0-beta4"]]
+
+    :plug-ins
+    [ [lein-cljsbuild             "1.1.7"]
+      [lein-figwheel              "0.5.10"]
+      [lein-cooper                "1.2.2"]]
 
     :keywords
     [ "electron"

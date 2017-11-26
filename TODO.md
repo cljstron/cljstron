@@ -1,3 +1,4 @@
 # What To Do Currently
   * [ ] In `window.cljs` windows' storage as `BrowserWindow`'s window #.
-  * [ ] Manage Lein's `project.clj`.
+  * [ ] Replace (inline "...") in generation of file
+  * [ ] Function (merge {}, #{} or [])

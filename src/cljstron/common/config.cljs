@@ -60,18 +60,17 @@
 
 (defn- update-list [level conf value]
   (let [[f & r] value]
-    (println "function in a list : " level f)
     (cond
       (= level :base)
       (cond
-        (= f 'quote)          (spy "(quote value) base = " value)
+        (= f 'quote)          value
         (= f 'symbol)         (cons f (map (partial change-value :base conf) r))
         (= f 'str)            (str-fn conf r)
         (= f 'loop)           (change-value :base conf (loop-fn conf r))
         :else                 (map (partial change-value :base conf) value))
       (= level :final)
       (cond
-        (= f 'quote)          (spy "(quote value) final = " (first r))
+        (= f 'quote)          (first r)
         (= f 'symbol)         (symbol-fn conf (first r))
         :else                 (map (partial change-value :final conf) value)))))
 

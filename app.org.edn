@@ -1,50 +1,55 @@
 ;;; General configuration file.
 ;;; This is resident with CLJStron library
 ;;;
-;;; :base are the base values taken for :main and every :plugs.
-;;; Every given value replaces value in the :base for its key.
+;;; Values of parent is recursively read first.
+;;; Every given value replaces value of the parent for its key.
 ;;;
 ;;; Then recursively every values in the key-values pairs are replaced :
-;;; - If it's a key it's replaced by the associated key value until it's a string
-;;; - If it's an list it's replaced by a string which is the concatenation
-;;; of all the strings, given that keys are replaced too by the string
-;;; values associated.
+;;; - If it's a keyword it's replaced by the associated key value until it's a non key
 ;;; - If it's a map keyed values are transformed recursively.
-;;; - If it's a set value is not changed
+;;; - If it's a set values are transformed recursively.
 ;;; - If it's a vector values are transformed recursively.
-;;;
-;;; - at the end of the process all set values are transformed in
-;;; their values, There should be only one value in the set so :
-;;; #{:aaa} -> :aaa
-;;; #{[:www '(1 2 3 "aaaa")]} -> [:www (1 2 3 "aaaa")]
-;;; #{{:www '(1 2 3)} -> {:www (1 2 3)}
+;;; - If it's a list values are transformed recursively.
+;;;   - If the first value of the list is a known function it is executed
+;;;     There is different levels of execution :base, :final and :write.
+;;;     - :base functions are executed recursively.
+;;;       - (str strings) When all values are transformed in strings, concatene these.
+;;;       - (loop iterable code) Code is generated for all values of the listed apps definitions.
+;;;       - (symbol string) Arg is recursively transformed until String witch is transformed in symbol.
+;;;       - (quote any) Keep value unmodified. (i.e. keeping keywords uninterpreted).
+;;;     - :final. Executed at the end.
+;;;       - (quote any) Suppress the (quote) letting only argument.
+;;;     - :write. Last transform based only on text file.
+;;;       - (inline string) get the string and put it litterally in place w/o double quotes. i.e.for meta-data
 
 ;; default values for all applications
 { :-base
-  { :github "https://github.com/"
-    :homepage (str :github :user "/" :project "/blob/master/README.md")
-    :bugs-page (str :github :user "/" :project "/issue")
-    :bugs-mail (str :user "@" :mail-host)
-    :bugs {:url :bugs-page :email :bugs-mail}    ; change npm-user to "" if it's a general package
-    :bins {}
-    :npm-user (str "@" :user "/")
-    :npm (str :npm-user :project)
-    :npm-deps {}
+  { :github       "https://github.com/"
+    :open-source  "https://opensource.org/licenses/"
+    :homepage     (str :github :user "/" :project "/blob/master/README.md")
+    :bugs-page    (str :github :user "/" :project "/issue")
+    :bugs-mail    (str :user "@" :mail-host)
+    :bugs         { :url :bugs-page
+                    :email :bugs-mail}
+    :bins         {}
+    :npm-user     (str "@" :user "/")
+    :npm          (str :npm-user :project)
+    :npm-deps     {}
     :npm-dev-deps {}
-    :scripts {}
+    :scripts      {}
     :directories.doc []
-    :apps []
-    :exec-file (str :exec ".js")
-    :exec-ns (str "main." :exec)
-    :exec-fn (symbol (str :exec-ns "/" :exec))
-    :renderer (str :resources "/js/" :exec ".js")
-    :git-url (str :github :user "/" :project ".git")
-    :user ""
-    :project ""
-    :exec ""
-    :mail-host ""
-    :resources ""
-    :src ""}
+    :apps         []
+    :exec-file    (str :exec ".js")
+    :exec-ns      (str "main." :exec)
+    :exec-fn      (symbol (str :exec-ns "/" :exec))
+    :renderer     (str :resources "/js/" :exec ".js")
+    :git-url      (str :github :user "/" :project ".git")
+    :user         ""
+    :project      ""
+    :exec         ""
+    :mail-host    ""
+    :resources    ""
+    :src          ""}
 
 
   :-gen-files
@@ -57,54 +62,38 @@
         :clj
         { :output :edn
           :project ; ("project.clj")
-          (defproject cljstron "0.0.4"
+          (defproject (symbol :project) :version
             (quote :license)
-            { :name "The MIT License"
-              :url "https://opensource.org/licenses/MIT"}
-            (quote :description) "A hello world application for electron"
-
-            (quote :dependencies)
-            [ [org.clojure/clojurescript "1.9.946"]
-              [camel-snake-kebab "0.4.0"]
-              [cljs-node-io "0.5.0"]
-              [org.clojure/tools.reader "1.1.1"]
-              [figwheel "0.5.14"]
-              [im.chit/hara.reflect "2.5.10"]
-              [org.clojure/clojure "1.9.0-beta4"]]
-              ;[reagent "0.6.1"]
-              ;[ring/ring-core "1.6.1"]
-
-            (quote :plugins)
-            [ [lein-cljsbuild "1.1.7"]
-              [lein-figwheel "0.5.10"]
-              [lein-cooper "1.2.2"]]
-
-            (quote :hooks)
-            [leiningen.cljsbuild]
-
-            (quote :clean-targets)
-            [ "main.js"
-              "generate.js"
-              "resources/js"
-              "target"]
+            { :name :licence
+              :url (str "https://opensource.org/licenses/" :licence)}
+            (quote :description)    :description
+            (quote :dependencies)   (merge :cljs-deps :lein-deps)
+            (quote :plugins)        :plug-ins
+            (quote :hooks)          [leiningen.cljsbuild]
+            (quote :clean-targets)  (inline "^{:protect false}")
+                                    (merge
+                                      (loop :apps :exec-file)
+                                      [ "resources/js"
+                                        "target"])
 
             (quote :cljsbuild)
             { :builds
-              [ { :id "main"
+              (loop :apps
+                { :id "main"
                   :compiler
-                  { :output-to "main.js"
-                    :main main.main/main
-                    :source-paths ["src"]
-                    :target (quote :nodejs)
-                    :optimizations (quote :none)
-                    :pretty-print false
-                    :cache-analysis true}}]
+                  { :output-to      :exec-file
+                    :main           :exec-fn
+                    :source-paths   :src
+                    :target         (quote :nodejs)
+                    :optimizations  (quote :none)
+                    :pretty-print   false
+                    :cache-analysis true}})
 
               :figwheel
-              { :http-server-root "resources"
-                :css-dirs ["resources/css"]
-                :ring-handler tools.figwheel-middleware/app
-                :server-port 3449}})}
+              { :http-server-root   "resources"
+                :css-dirs           ["resources/css"]
+                :ring-handler       tools.figwheel-middleware/app
+                :server-port        3449}})}
 
         ;; generate boot makefile
         :boot
@@ -122,10 +111,10 @@
             :dependencies :cljs-deps
             ; We'll loop only on main for now, but it should work
             :builds
-            ( loop :apps
-                { :target (quote :node-script),
-                  :output-to :exec-file,
-                  :main :exec-fn})}}
+            (loop :apps
+              { :target (quote :node-script)
+                :output-to :exec-file
+                :main :exec-fn})}}
 
         ;; generate json file
         :json
@@ -136,7 +125,7 @@
             :description :description
             :repository :repository
             :license :licence
-            :homepage :homepage,
+            :homepage :homepage
             :name :npm
             :bugs :bugs
             :scripts :scripts
