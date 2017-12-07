@@ -54,8 +54,7 @@
         │   │   └── window.cljs         Windows management, containers of renderers
         │   ├── [common]                Root for helper function for both applications
         │   │   ├── cljjs.cljs          Translate recursively JS->CLJS structures
-        │   │   ├── app.cljs            App management. Require, launch
-        │   │   ├── plug.cljs           Plugs management. Require, launch
+        │   │   ├── config.cljs         Apps configuration management.
         │   │   └── util.cljs           Some utility functions
         │   └── [renderer]              Root for helper function for renderer application
 ### Sources For Dev And Debug
