@@ -15,7 +15,7 @@
 ;;;     - :base functions are executed recursively.
 ;;;       - (str strings) When all values are transformed in strings, concatene these.
 ;;;       - (loop iterable code) Code is generated for all values of the listed apps definitions.
-;;;       - (symbol string) Arg is recursively transformed until String witch is transformed in symbol.
+;;;       - (symbol string) Arg is recursively transformed until String witch is concatenated into a symbol.
 ;;;       - (quote any) Keep value unmodified. (i.e. keeping keywords uninterpreted).
 ;;;     - :final. Executed at the end.
 ;;;       - (quote any) Suppress the (quote) letting only argument.
@@ -25,33 +25,36 @@
 ;; default values for all applications
 { :-base
   { :github       "https://github.com/"
-    :open-source  "https://opensource.org/licenses/"
+    :licences     "https://opensource.org/licenses/"
     :homepage     (str :github :user "/" :project "/blob/master/README.md")
     :bugs-page    (str :github :user "/" :project "/issue")
     :bugs-mail    (str :user "@" :mail-host)
     :bugs         { :url :bugs-page
                     :email :bugs-mail}
-    :bins         {}
     :npm-user     (str "@" :user "/")
     :npm          (str :npm-user :project)
-    :npm-deps     {}
-    :npm-dev-deps {}
-    :scripts      {}
-    :directories.doc []
-    :apps         []
     :exec-file    (str :exec ".js")
     :exec-ns      (str "main." :exec)
-    :exec-fn      (symbol (str :exec-ns "/" :exec))
+    :exec-fn      (symbol :exec-ns "/" :exec)
     :renderer     (str :resources "/js/" :exec ".js")
     :git-url      (str :github :user "/" :project ".git")
-    :user         ""
-    :project      ""
-    :exec         ""
-    :mail-host    ""
-    :resources    ""
-    :src          ""}
 
+    ; Values to be defined in the app.edn config file
+    :npm-deps         {}
+    :npm-dev-deps     {}
+    :scripts          {}
+    :directories.doc  []
+    :apps             []
+    :bins             {}
+    :user             ""
+    :project          ""
+    :licence          ""
+    :exec             ""
+    :mail-host        ""
+    :resources        ""
+    :src              ""}
 
+  ; templates
   :-gen-files
     {
       :parent :main
@@ -63,32 +66,29 @@
         { :output :edn
           :project ; ("project.clj")
           (defproject (symbol :project) :version
-            (quote :license)
-            { :name :licence
-              :url (str "https://opensource.org/licenses/" :licence)}
+            (quote :license)        { :name :licence
+                                      :url (str "https://opensource.org/licenses/" :licence)}
             (quote :description)    :description
             (quote :dependencies)   (merge :cljs-deps :lein-deps)
             (quote :plugins)        :plug-ins
             (quote :hooks)          [leiningen.cljsbuild]
             (quote :clean-targets)  (inline "^{:protect false}")
                                     (merge
-                                      (loop :apps :exec-file)
+                                      (loop :apps [:exec-file])
                                       [ "resources/js"
                                         "target"])
-
             (quote :cljsbuild)
             { :builds
               (loop :apps
-                { :id "main"
-                  :compiler
-                  { :output-to      :exec-file
-                    :main           :exec-fn
-                    :source-paths   :src
-                    :target         (quote :nodejs)
-                    :optimizations  (quote :none)
-                    :pretty-print   false
-                    :cache-analysis true}})
-
+                [ { :id :str-id
+                    :compiler
+                    { :output-to      :exec-file
+                      :main           :exec-fn
+                      :source-paths   :src
+                      :target         (quote :nodejs)
+                      :optimizations  (quote :none)
+                      :pretty-print   false
+                      :cache-analysis true}}])
               :figwheel
               { :http-server-root   "resources"
                 :css-dirs           ["resources/css"]
@@ -112,9 +112,10 @@
             ; We'll loop only on main for now, but it should work
             :builds
             (loop :apps
-              { :target (quote :node-script)
-                :output-to :exec-file
-                :main :exec-fn})}}
+              {:id
+                { :target (quote :node-script)
+                  :output-to :exec-file
+                  :main :exec-fn}})}}
 
         ;; generate json file
         :json

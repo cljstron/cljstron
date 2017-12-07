@@ -5,16 +5,16 @@
     [cljs-node-io.core :as io :refer [slurp spit]]
     [cljs.pprint :refer [pprint]]
     [clojure.string :as str]
-    [cljstron.common.utils :refer [error spy]]
+    [cljstron.common.utils :refer [error spy str*]]
     [cljstron.common.cljjs :refer [rjs->clj]]))
 
 (enable-util-print!)
 
-(defn- read-edn* [file]
-  "Read `file` and tranform it from :edn to clojure structure."
-  (read-string (slurp file)))
-
-(def ^:export read-edn (memoize read-edn*))
+(def ^:export read-edn
+  (memoize
+    (fn read-edn* [file]
+      "Read `file` and tranform it from :edn to clojure structure."
+      (read-string (slurp file)))))
 
 (defn ^:export write-edn [file data]
   "Write `data` in file `file` in :edn format."
@@ -34,45 +34,50 @@
 (defn- update-coll [level conf value]
   (into (empty value) (map (partial change-value level conf) value)))
 
-(defn- symbol-fn [conf symb & rest]
-  (let [symb      (change-value :final conf
-                    (change-value :base conf symb))]
-    (apply symbol (str/split symb #"/"))))
-
 ; forward
-(declare ^:private read-app-edn2)
+(declare ^:private read-app-edn-base)
 
-(defn- loop-fn [conf [key-list body &rest]]
+(defn- loop-fn [conf [key-list body]]
   (loop [ keys (seq (change-value :final conf
                       (change-value :base conf key-list)))
-          res {}]
-    (if (seq? keys)
+          res (empty body)]
+    (if keys
       (let  [ key (first keys)
-              conf (read-app-edn2 key ".")
+              conf (merge conf (read-app-edn-base key "."))
               val (change-value :base conf body)]
-        (recur (seq (rest keys)) (merge res {key val})))
+        (recur (seq (rest keys)) (apply merge res val)))
       res)))
 
 (defn- str-fn [conf r]
   (if (every? string? r)
-    (apply str r)
+    (str* r)
     (cons 'str (change-value :base conf r))))
+
+(defn- symbol-fn [conf r]
+  (if (every? string? r)
+    (apply symbol (str/split (str* r) #"/"))
+    (cons 'symbol (change-value :base conf r))))
+
+(defn- merge-fn [conf r]
+  (if (every? #(or (map? %) (vector? %)) r)
+    (reduce #(apply merge %1 %2) (spy "reducing merge with : " r))
+    (cons 'merge (change-value :base conf r))))
 
 (defn- update-list [level conf value]
   (let [[f & r] value]
-    (cond
-      (= level :base)
-      (cond
-        (= f 'quote)          value
-        (= f 'symbol)         (cons f (map (partial change-value :base conf) r))
-        (= f 'str)            (str-fn conf r)
-        (= f 'loop)           (change-value :base conf (loop-fn conf r))
-        :else                 (map (partial change-value :base conf) value))
-      (= level :final)
-      (cond
-        (= f 'quote)          (first r)
-        (= f 'symbol)         (symbol-fn conf (first r))
-        :else                 (map (partial change-value :final conf) value)))))
+    (case level
+      :base
+        (case f
+          quote     value
+          symbol    (symbol-fn conf r)
+          str       (str-fn conf r)
+          merge     (merge-fn conf r)
+          loop      (change-value :base conf (loop-fn conf r))
+                    (map (partial change-value :base conf) value))
+      :final
+        (case f
+          quote     (first r)
+                    (map (partial change-value :final conf) value)))))
 
 (defn- update-kv [level conf [key value]]
   (if (get #{:parent :output} key)
@@ -89,15 +94,17 @@
       (error "(app/update-keyword) The key '" value "' has no definition in " conf))
     value))
 
+(defn- no-update [level conf value]
+  value)
+
 (defn- change-value-1 [level conf value]
-  (cond
-    (vector? value)   (update-coll level conf value)
-    (map? value)      (update-map level conf value)
-    (set? value)      (update-coll level conf value)
-    (list? value)     (update-list level conf value)
-    (seq? value)      (update-list level conf value)
-    (keyword? value)  (update-keyword level conf value)
-    :else             value))
+  ( (condp #(%1 %2) value
+      #(or (vector? %) (set? %))  update-coll
+      #(or (list? %) (seq? %))    update-list
+      map?                        update-map
+      keyword?                    update-keyword
+                                  no-update)
+    level conf value))
 
 (defn- change-value [level conf value]
   (let [new-value (change-value-1 level conf value)]
@@ -105,12 +112,12 @@
       value
       (recur level conf new-value))))
 
-(defn- load-def* [path]
-  (merge
-    (read-edn (str path "/app.org.edn"))
-    (read-edn (str path "/app.edn"))))
-
-(def ^:export load-def (memoize load-def*))
+(def ^:export load-def
+  (memoize
+    (fn load-def* [path]
+      (merge
+        (read-edn (str path "/app.org.edn"))
+        (read-edn (str path "/app.edn"))))))
 
 (defn- merge-parents [app key]
   (if key
@@ -121,17 +128,18 @@
         val))
     {}))
 
-(defn- read-app-edn2* [key path]
-  (loop [cont (merge-parents (load-def path) key)]
-    (let [new-cont (change-value :base cont cont)]
-      (if (= new-cont cont)
-        cont
-        (recur new-cont)))))
-
-(def ^:private read-app-edn2 (memoize read-app-edn2*))
+(def ^:private read-app-edn-base
+  (memoize
+    (fn read-app-edn-base* [key path]
+      (println "read-app-edn-base: " key path)
+      (loop [cont (merge-parents (load-def path) key)]
+        (let [new-cont (change-value :base cont cont)]
+          (if (= new-cont cont)
+            cont
+            (recur new-cont)))))))
 
 (defn read-app-edn [key path]
-  (change-value :final {} (read-app-edn2 key path)))
+  (change-value :final {} (read-app-edn-base key path)))
 
 (defn- write-files [files ext output]
   (when files

@@ -1,4 +1,7 @@
 # CHANGES in CLJStron
+
+### 27 Nov 2017
+  * [X] config.cljs (symbol) concatenates strings into a symbol
 ### 24 Nov 2017
   * [X] Manage Lein's `project.clj`, phase one.
 ### 22 Nov 2017
