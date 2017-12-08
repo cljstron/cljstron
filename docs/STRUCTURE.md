@@ -37,16 +37,16 @@
     │  ├oo ['@user plugs']              User plug @user name directory (can have multiple plugs)
     │  │   └oo ['plug name']            User plug repository
     │  └oo ['plug name']                Non user plug repository (can have multiple plugs)
-### Resources For Library
+### Resources For Renderers
     ├── ['resources']                   Public HTML root directory for the renderer
     │   ├── [css]                       CSS directory for application
     │   ├== [js]                        Compiled AOT, cache an executables for renderer
     │   │   ├++ [cljs-runtime]          Library and runtime for renderer
     │   │   ├++ manifest.json           Manifest of libraries and runtime
     │   │   └== lib.js                  The compiled library for the renderer
-    │   ├── index.html                  Empty page to create content from javascript
-### Resources For Dev And Debug
-    │   └== main.js                     The compiled main program of the application
+    │   └── index.html                  Empty page to create content from javascript
+### Resources For Main
+    ├== main.js                         The compiled main program of the application
 ### Sources
     └── ['src']                         Sources root
         ├── [cljstron]                  Root of cljstron library
