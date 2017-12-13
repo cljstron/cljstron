@@ -21,18 +21,18 @@
  [leiningen.cljsbuild]
  :clean-targets
  (inline "^{:protect false}")
- [["main.js"] "resources/js" "target"]
+ ["main.js" "resources/js" "target"]
  :cljsbuild
  {:builds
-  {:id "main",
-   :compiler
-   {:output-to "main.js",
-    :main main.main/main,
-    :source-paths ["src"],
-    :target :nodejs,
-    :optimizations :none,
-    :pretty-print false,
-    :cache-analysis true}},
+  [{:id "main",
+    :compiler
+    {:output-to "main.js",
+     :main main.main/main,
+     :source-paths ["src"],
+     :target :nodejs,
+     :optimizations :none,
+     :pretty-print false,
+     :cache-analysis true}}],
   :figwheel
   {:http-server-root "resources",
    :css-dirs ["resources/css"],

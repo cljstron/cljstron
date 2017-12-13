@@ -29,41 +29,36 @@
   (spit file (.stringify js/JSON (clj->js data) nil "  ")))
 
 ; forward
-(declare ^:private change-value)
-
-(defn- update-coll [level conf value]
-  (into (empty value) (map (partial change-value level conf) value)))
-
-; forward
 (declare ^:private read-app-edn-base)
+(declare ^:private eval-value)
 
 (defn- loop-fn [conf [key-list body]]
-  (loop [ keys (seq (change-value :final conf
-                      (change-value :base conf key-list)))
+  (loop [ keys (seq (eval-value :final false conf
+                      (eval-value :base false conf key-list)))
           res (empty body)]
     (if keys
       (let  [ key (first keys)
               conf (merge conf (read-app-edn-base key "."))
-              val (change-value :base conf body)]
+              val (eval-value :base true conf body)]
         (recur (seq (rest keys)) (apply merge res val)))
       res)))
 
 (defn- str-fn [conf r]
   (if (every? string? r)
     (str* r)
-    (cons 'str (change-value :base conf r))))
+    (cons 'str (eval-value :base false conf r))))
 
 (defn- symbol-fn [conf r]
   (if (every? string? r)
     (apply symbol (str/split (str* r) #"/"))
-    (cons 'symbol (change-value :base conf r))))
+    (cons 'symbol (eval-value :base false conf r))))
 
 (defn- merge-fn [conf r]
   (if (every? #(or (map? %) (vector? %)) r)
     (reduce #(apply merge %1 %2) (spy "reducing merge with : " r))
-    (cons 'merge (change-value :base conf r))))
+    (cons 'merge (eval-value :base false conf r))))
 
-(defn- update-list [level conf value]
+(defn- eval-list-or-seq [level key-val conf value]
   (let [[f & r] value]
     (case level
       :base
@@ -72,45 +67,62 @@
           symbol    (symbol-fn conf r)
           str       (str-fn conf r)
           merge     (merge-fn conf r)
-          loop      (change-value :base conf (loop-fn conf r))
-                    (map (partial change-value :base conf) value))
+          loop      (loop-fn conf r)
+                    (if key-val
+                      value
+                      (map (partial eval-value :base key-val conf) value)))
       :final
         (case f
           quote     (first r)
-                    (map (partial change-value :final conf) value)))))
+                    (map (partial eval-value :final key-val conf) value)))))
 
-(defn- update-kv [level conf [key value]]
-  (if (get #{:parent :output} key)
-    [key value]
-    [key (change-value level conf value)]))
+(defn- eval-kv [level key-val conf [key value]]
+  (let [key (if key-val
+              (eval-value level true conf key)
+              key)]
+    (if (get #{:parent :output} key)
+      [key value]
+      [key (eval-value level false conf value)])))
 
-(defn- update-map [level conf value]
-  (into {} (map (partial update-kv level conf) value)))
+(defn- eval-map [level key-val conf value]
+  (into {} (map (partial eval-kv level key-val conf) value)))
 
-(defn- update-keyword [level conf value]
+(defn- eval-keyword [level key-val conf value]
   (if (= level :base)
     (if-let [new-value (get conf value)]
       new-value
-      (error "(app/update-keyword) The key '" value "' has no definition in " conf))
+      value)
     value))
 
-(defn- no-update [level conf value]
+(defn- no-eval [level _ conf value]
   value)
 
-(defn- change-value-1 [level conf value]
-  ( (condp #(%1 %2) value
-      #(or (vector? %) (set? %))  update-coll
-      #(or (list? %) (seq? %))    update-list
-      map?                        update-map
-      keyword?                    update-keyword
-                                  no-update)
-    level conf value))
+(defn- eval-vect-or-set [level _ conf value]
+  (into (empty value)
+        (map (partial eval-value level false conf) value)))
 
-(defn- change-value [level conf value]
-  (let [new-value (change-value-1 level conf value)]
+(defn- eval-fn [key-val value]
+  (if key-val
+    (condp #(%1 %2) value
+      #(or (list? %) (seq? %))    eval-list-or-seq
+      map?                        eval-map
+      keyword?                    eval-keyword
+                                  no-eval)
+    (condp #(%1 %2) value
+      #(or (vector? %) (set? %))  eval-vect-or-set
+      #(or (list? %) (seq? %))    eval-list-or-seq
+      map?                        eval-map
+      keyword?                    eval-keyword
+                                  no-eval)))
+
+(defn- eval-value-1 [level key-val conf value]
+  ((eval-fn key-val value) level key-val conf value))
+
+(defn- eval-value [level key-val conf value]
+  (let [new-value (eval-value-1 level key-val conf value)]
     (if (= new-value value)
       value
-      (recur level conf new-value))))
+      (recur level key-val conf new-value))))
 
 (def ^:export load-def
   (memoize
@@ -133,13 +145,13 @@
     (fn read-app-edn-base* [key path]
       (println "read-app-edn-base: " key path)
       (loop [cont (merge-parents (load-def path) key)]
-        (let [new-cont (change-value :base cont cont)]
+        (let [new-cont (eval-value :base false cont cont)]
           (if (= new-cont cont)
             cont
             (recur new-cont)))))))
 
 (defn read-app-edn [key path]
-  (change-value :final {} (read-app-edn-base key path)))
+  (eval-value :final false {} (read-app-edn-base key path)))
 
 (defn- write-files [files ext output]
   (when files
@@ -151,7 +163,6 @@
         (= output :json)    (write-json filename content)
         :else (error "(app/write-gen-files) File type unknown : " output))
       (recur (seq (rest files)) ext output))))
-
 
 (defn ^:export write-gen-files [path]
   (loop [ extensions (seq (:code (read-app-edn :-gen-files ".")))]

@@ -64,6 +64,8 @@
   ;; values for main app
   :main
   { :parent :app
+    :id :main
+    :str-id "main"
     :project "cljstron"
     :exec "main"
     :bugs-mail (str :user "@" :mail-host)

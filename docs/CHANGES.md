@@ -1,5 +1,10 @@
 # CHANGES in CLJStron
 
+### 12 Dec 2017
+  * [X] config.cljs improve loop-fn to accept key change of maps in body.
+  * [X] config.cljs manage passing loop state across eval functions.
+  * [X] config.cljs modify change- and update- functions to eval- as we are unmutable.
+  * [X] config.cljs function (merge {}, #{} or [])
 ### 27 Nov 2017
   * [X] config.cljs (symbol) concatenates strings into a symbol
 ### 24 Nov 2017
