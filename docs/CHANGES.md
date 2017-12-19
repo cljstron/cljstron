@@ -1,5 +1,6 @@
 # CHANGES in CLJStron
-
+### 18 Dec 2017
+  * [X] Replace `(inline "...")` in generation of file
 ### 12 Dec 2017
   * [X] config.cljs improve loop-fn to accept key change of maps in body.
   * [X] config.cljs manage passing loop state across eval functions.

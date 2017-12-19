@@ -16,17 +16,39 @@
       "Read `file` and tranform it from :edn to clojure structure."
       (read-string (slurp file)))))
 
-(defn ^:export write-edn [file data]
-  "Write `data` in file `file` in :edn format."
-  (spit file (with-out-str (pprint data))))
+(defn ^:export str-edn [data]
+  "Stringify `data` in :edn format."
+  (with-out-str (pprint data)))
+
+(defn ^:export write-edn
+  ( [file data]
+    "Write `data` in file `file` in :edn format."
+    (write-edn file data nil))
+  ( [file data transform]
+    "Write `data` in file `file` in :edn format with file transformation."
+    (spit file
+      (if transform
+        (transform (str-edn data))
+        (str-edn data)))))
 
 (defn ^:export read-json [file]
   "Read `file` and tranform it from JSON to clojure structure."
   (rjs->clj (.parse js/JSON (slurp file))))
 
-(defn ^:export write-json [file data]
-  "Write `data` in file `file` in JSON format."
-  (spit file (.stringify js/JSON (clj->js data) nil "  ")))
+(defn ^:export str-json [data]
+  "Stringify `data` in JSON format."
+  (.stringify js/JSON (clj->js data) nil "  "))
+
+(defn ^:export write-json
+  ( [file data]
+    "Write `data` in file `file` in JSON format."
+    (spit file data nil))
+  ( [file data transform]
+    "Write `data` in file `file` in JSON format with file transformation."
+    (spit file
+      (if transform
+        (transform (str-json data))
+        (str-json data)))))
 
 ; forward
 (declare ^:private read-app-edn-base)
@@ -55,7 +77,7 @@
 
 (defn- merge-fn [conf r]
   (if (every? #(or (map? %) (vector? %)) r)
-    (reduce #(apply merge %1 %2) (spy "reducing merge with : " r))
+    (reduce #(apply merge %1 %2) r)
     (cons 'merge (eval-value :base false conf r))))
 
 (defn- eval-list-or-seq [level key-val conf value]
@@ -94,7 +116,7 @@
       value)
     value))
 
-(defn- no-eval [level _ conf value]
+(defn- no-eval [_ _ _ value]
   value)
 
 (defn- eval-vect-or-set [level _ conf value]
@@ -102,14 +124,9 @@
         (map (partial eval-value level false conf) value)))
 
 (defn- eval-fn [key-val value]
-  (if key-val
+  (if (and (not key-val) (or (vector? value) (set? value)))
+    eval-vect-or-set
     (condp #(%1 %2) value
-      #(or (list? %) (seq? %))    eval-list-or-seq
-      map?                        eval-map
-      keyword?                    eval-keyword
-                                  no-eval)
-    (condp #(%1 %2) value
-      #(or (vector? %) (set? %))  eval-vect-or-set
       #(or (list? %) (seq? %))    eval-list-or-seq
       map?                        eval-map
       keyword?                    eval-keyword
@@ -143,7 +160,6 @@
 (def ^:private read-app-edn-base
   (memoize
     (fn read-app-edn-base* [key path]
-      (println "read-app-edn-base: " key path)
       (loop [cont (merge-parents (load-def path) key)]
         (let [new-cont (eval-value :base false cont cont)]
           (if (= new-cont cont)
@@ -153,19 +169,23 @@
 (defn read-app-edn [key path]
   (eval-value :final false {} (read-app-edn-base key path)))
 
+(defn eval-term-fn [str]
+  (-> str
+    (str/replace #"\(inline \"([^\"]*)[^)]*\)" "$1")))
+
 (defn- write-files [files ext output]
   (when files
     (let [[filename content] (first files)
           filename (str (name filename) "." (name ext))]
       (println "generate " filename)
       (cond
-        (= output :edn)     (write-edn filename content)
-        (= output :json)    (write-json filename content)
+        (= output :edn)     (write-edn filename content eval-term-fn)
+        (= output :json)    (write-json filename content eval-term-fn)
         :else (error "(app/write-gen-files) File type unknown : " output))
       (recur (seq (rest files)) ext output))))
 
 (defn ^:export write-gen-files [path]
-  (loop [ extensions (seq (:code (read-app-edn :-gen-files ".")))]
+  (loop [ extensions (seq (:code (read-app-edn :-gen-files path)))]
     (when extensions
       (let [[ext-name ext-content] (first extensions)
             output (:output ext-content)]

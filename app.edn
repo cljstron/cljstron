@@ -22,6 +22,7 @@
 ;;;     - :write. Last transform based only on text file.
 ;;;       - (inline ...) get the string and put it litterally in place w/o double quotes. i.e.for meta-data
 {
+  :include "app.org.edn"
   ;; default values for whole app
   :app
   {
@@ -34,7 +35,7 @@
     :author     "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre"
     :src        ["src"]
     :apps       (quote [:main])
-    :bins       {:generate "./generate.js"}
+    :bins       {:cljstron "./main.js"} ;; this sucks, missing electron
     :repository { :type "git"
                   :url :git-url}
 
@@ -56,6 +57,10 @@
       [lein-figwheel              "0.5.10"]
       [lein-cooper                "1.2.2"]]
 
+    :npm-deps
+    { :electron                   "^1.8.1"
+      :shadow-cljs                "^2.0.115"}
+
     :keywords
     [ "electron"
       "clojurescript"
@@ -70,9 +75,6 @@
     :exec "main"
     :bugs-mail (str :user "@" :mail-host)
     :scripts {:start "electron ."}
-    :npm-deps
-      { :electron "^1.8.1"
-        :shadow-cljs "^2.0.59"}
     :description
       "A library to manage and develop `electron` applications in `ClojureScript`... and `Clojure`?"}
 
