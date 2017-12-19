@@ -12,7 +12,7 @@
   [org.clojure/clojurescript "1.9.946"]
   [figwheel "0.5.14"]
   [im.chit/hara.reflect "2.5.10"]
-  [org.clojure/clojure "1.9.0-beta4"]]
+  [org.clojure/clojure "1.9.0"]]
  :plugins
  [[lein-cljsbuild "1.1.7"]
   [lein-figwheel "0.5.10"]
