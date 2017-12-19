@@ -1,4 +1,6 @@
 # CHANGES in CLJStron
+### 19 Dec 2017
+  * [X] Change README to link on various docs files.
 ### 18 Dec 2017
   * [X] Replace `(inline "...")` in generation of file
 ### 12 Dec 2017

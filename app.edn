@@ -29,7 +29,7 @@
     :parent :-base
     :user       "cljstron"
     :mail-host  "gmail.com"
-    :version    "0.0.5"
+    :version    "0.0.6"
     :licence    "MIT"
     :resources  "resources"
     :author     "Ivan Pierre <kilroysoft@gmail.com> http://about.me/ivan_pierre"
@@ -58,7 +58,7 @@
       [lein-cooper                "1.2.2"]]
 
     :npm-deps
-    { :electron                   "^1.8.1"
+    { :electron                   "^1.7.10"
       :shadow-cljs                "^2.0.117"}
 
     :keywords
