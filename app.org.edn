@@ -34,7 +34,7 @@
     :npm-user     (str "@" :user "/")
     :npm          (str :npm-user :project)
     :exec-file    (str :exec ".js")
-    :exec-ns      (str "main." :exec)
+    :exec-ns      (str :project ".main." :exec)
     :exec-fn      (symbol :exec-ns "/" :exec)
     :renderer     (str :resources "/js/" :exec ".js")
     :git-url      (str :github :user "/" :project ".git")

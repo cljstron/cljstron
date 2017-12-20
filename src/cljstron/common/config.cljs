@@ -171,7 +171,7 @@
 
 (defn eval-term-fn [str]
   (-> str
-    (str/replace #"\(inline \"([^\"]*)[^)]*\)" "$1")))
+    (str/replace #"\(inline \"([^\"]*)[^)]*\)" "$1"))) ; TODO manage escaped quotes
 
 (defn- write-files [files ext output]
   (when files

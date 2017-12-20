@@ -1,6 +1,6 @@
 (defproject
  cljstron
- "0.0.5"
+ "0.0.7"
  :license
  {:name "MIT", :url "https://opensource.org/licenses/MIT"}
  :description
@@ -27,7 +27,7 @@
   [{:id "main",
     :compiler
     {:output-to "main.js",
-     :main main.main/main,
+     :main cljstron.main.main/main,
      :source-paths ["src"],
      :target :nodejs,
      :optimizations :none,

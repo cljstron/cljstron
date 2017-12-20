@@ -25,10 +25,10 @@
   "bin": {
     "cljstron": "./main.js"
   },
-  "version": "0.0.5",
+  "version": "0.0.7",
   "main": "main.js",
   "dependencies": {
-    "electron": "^1.8.1",
+    "electron": "^1.7.10",
     "shadow-cljs": "^2.0.117"
   }
 }

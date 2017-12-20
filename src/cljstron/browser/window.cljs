@@ -101,7 +101,6 @@
   "Include `code` as JavaScript code.
   `code` : JavaScript code to execute as a String.
   Nil value for `code` includes nothing."
-  (println "code -> " code)
   (if code
     (str code "\n")
     ""))

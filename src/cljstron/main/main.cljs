@@ -1,5 +1,5 @@
 
-(ns main.main
+(ns cljstron.main.main
   (:require [cljstron.browser.window :refer [open-window]]
             [cljs.nodejs :as node :refer [enable-util-print!]]
             [electron :refer [app]]

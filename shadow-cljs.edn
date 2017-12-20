@@ -5,4 +5,6 @@
   [org.clojure/tools.reader "1.1.0"]],
  :builds
  {:main
-  {:target :node-script, :output-to "main.js", :main main.main/main}}}
+  {:target :node-script,
+   :output-to "main.js", 
+   :main cljstron.main.main/main}}}
