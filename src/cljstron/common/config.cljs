@@ -16,7 +16,7 @@
       "Read `file` and tranform it from :edn to clojure structure."
       (read-string (slurp file)))))
 
-(defn ^:export str-edn [data]
+(defn- str-edn [data]
   "Stringify `data` in :edn format."
   (with-out-str (pprint data)))
 
@@ -55,6 +55,12 @@
 (declare ^:private eval-value)
 
 (defn- loop-fn [conf [key-list body]]
+  "Evaluate `(loop key-list body)` function.
+   `body` will evaluate to the `body` value.
+   `key-list` is the list of keys to be used get app data to evaluate each body.
+   All bodies will be merged in one collection that will be returned.
+   i.e. (loop (quote [:el1 :el2])) [:avalue]) -> [val1 val2] where valN is
+   the evaluation of :avalue in app env :elN"
   (loop [ keys (seq (eval-value :final false conf
                       (eval-value :base false conf key-list)))
           res (empty body)]
@@ -66,21 +72,25 @@
       res)))
 
 (defn- str-fn [conf r]
+  "Evaluate (str val...) returning the concatenation of evaluated string values."
   (if (every? string? r)
     (str* r)
     (cons 'str (eval-value :base false conf r))))
 
 (defn- symbol-fn [conf r]
+  "Evaluate (symbol val...) returning the symbol from concatenation of evaluated string values."
   (if (every? string? r)
     (apply symbol (str/split (str* r) #"/"))
     (cons 'symbol (eval-value :base false conf r))))
 
 (defn- merge-fn [conf r]
+  "Merge collections (vectors, set, map, list)"
   (if (every? #(or (map? %) (vector? %)) r)
     (reduce #(apply merge %1 %2) r)
     (cons 'merge (eval-value :base false conf r))))
 
 (defn- eval-list-or-seq [level key-val conf value]
+  "Evaluate lists or sequences as functions or collection of evaluated collections."
   (let [[f & r] value]
     (case level
       :base
@@ -99,6 +109,7 @@
                     (map (partial eval-value :final key-val conf) value)))))
 
 (defn- eval-kv [level key-val conf [key value]]
+  "Evaluate [`key` `value`], `key` if `key-val`."
   (let [key (if key-val
               (eval-value level true conf key)
               key)]
@@ -107,23 +118,28 @@
       [key (eval-value level false conf value)])))
 
 (defn- eval-map [level key-val conf value]
+  "Evaluate a map with `eval-kv`for each `key`."
   (into {} (map (partial eval-kv level key-val conf) value)))
 
-(defn- eval-keyword [level key-val conf value]
+(defn- eval-keyword [level key-val conf keyword]
+  "Eval `keyword` according to `level`, `key-val` and `conf`."
   (if (= level :base)
     (if-let [new-value (get conf value)]
       new-value
-      value)
-    value))
+      keyword)
+    keyword))
 
 (defn- no-eval [_ _ _ value]
+  "Return value 'as-is'."
   value)
 
 (defn- eval-vect-or-set [level _ conf value]
+  "Evaluate vector or set collections elements"
   (into (empty value)
         (map (partial eval-value level false conf) value)))
 
 (defn- eval-fn [key-val value]
+  "Return function that eval specific value type of data"
   (if (and (not key-val) (or (vector? value) (set? value)))
     eval-vect-or-set
     (condp #(%1 %2) value
@@ -133,15 +149,18 @@
                                   no-eval)))
 
 (defn- eval-value-1 [level key-val conf value]
+  "Make one evaluation only of `value`."
   ((eval-fn key-val value) level key-val conf value))
 
 (defn- eval-value [level key-val conf value]
+  "Evaluate `value` until no more evaluation is possible."
   (let [new-value (eval-value-1 level key-val conf value)]
     (if (= new-value value)
       value
       (recur level key-val conf new-value))))
 
-(def ^:export load-def
+(def ^:private load-def
+  "Load definition files returning an environment."
   (memoize
     (fn load-def* [path]
       (merge
@@ -149,13 +168,12 @@
         (read-edn (str path "/app.edn"))))))
 
 (defn- merge-parents [app key]
-  (if key
-    (let [val (get app key)
-          parent (get val :parent)]
-      (if parent
-        (merge (merge-parents app parent) val)
-        val))
-    {}))
+  "Merging `app`'s `key` environment to parent's environment recursively."
+  (let [val (get app key {})
+        parent (get val :parent)]
+    (if parent
+      (merge (merge-parents app parent) val)
+      val)))
 
 (def ^:private read-app-edn-base
   (memoize
@@ -169,11 +187,13 @@
 (defn read-app-edn [key path]
   (eval-value :final false {} (read-app-edn-base key path)))
 
-(defn eval-term-fn [str]
+(defn- eval-term-fn [str]
+  "Evaluate last level functions from text image of environment"
   (-> str
     (str/replace #"\(inline \"([^\"]*)[^)]*\)" "$1"))) ; TODO manage escaped quotes
 
 (defn- write-files [files ext output]
+  "Write files for an extension."
   (when files
     (let [[filename content] (first files)
           filename (str (name filename) "." (name ext))]
@@ -185,6 +205,7 @@
       (recur (seq (rest files)) ext output))))
 
 (defn ^:export write-gen-files [path]
+  "Write all generated files."
   (loop [ extensions (seq (:code (read-app-edn :-gen-files path)))]
     (when extensions
       (let [[ext-name ext-content] (first extensions)
